@@ -23,13 +23,13 @@ sudo apt-get install -y nodejs`
 5. Open your browser and key in: `127.0.0.1` in the address bar. If it doesn't work, seek help.
 
 **Node.js**
-Reference tutorials (These are some youtube tutorials of some basic git usages):
+Reference tutorials (These are some youtube tutorials of some basic git usages):<br>
 [NodeJS crash course](https://www.youtube.com/watch?v=w-7RQ46RgxU&list=PL4cUxeGkcC9gcy9lrvMJ75z9maRw4byYp) (37 videos, but the first 30 videos are good enough)
 
 **GIT**
-Reference tutorials:
-[Adding, commiting and pushing](https://www.youtube.com/watch?v=5HLst694D_Y) (4:45)
-[Branching](https://www.youtube.com/watch?v=JTE2Fn_sCZs) (6:36)
+Reference tutorials: <br>
+[Adding, commiting and pushing](https://www.youtube.com/watch?v=5HLst694D_Y) (4:45)<br>
+[Branching](https://www.youtube.com/watch?v=JTE2Fn_sCZs) (6:36)<br>
 [Merging](https://www.youtube.com/watch?v=JTE2Fn_sCZs) (7:10)
 
 
