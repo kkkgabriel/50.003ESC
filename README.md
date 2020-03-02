@@ -4,7 +4,7 @@
 For non ubuntu users, go to [Node.js](https://nodejs.org/en/download/package-manager/) and follow their instructions.
 For ubuntu users, use this in your terminal: <br>
 `curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -` <br>
-`sudo apt-get install -y nodejs`
+`sudo apt-get install -y nodejs`	
 
 	You can verify if you have successfully installed node and npm, or if you already have them with these lines: <br>
 `node -v`
@@ -18,7 +18,7 @@ For ubuntu users, use this in your terminal: <br>
 `npm install`
 
 4. Test the app by deploying the HTTP server locally <br>
-`nodemon app`
+`nodemon main`
 
 5. Open your browser and key in: `localhost:3000` in the address bar. If it doesn't work, seek help.
 
