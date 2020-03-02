@@ -2,25 +2,25 @@
 
 1. Download Node.js and npm (npm comes together with node)
 For non ubuntu users, go to [Node.js](https://nodejs.org/en/download/package-manager/) and follow their instructions.
-For ubuntu users, use this in your terminal: 
+For ubuntu users, use this in your terminal: <br>
 `curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
 sudo apt-get install -y nodejs`
 
-	You can verify if you have successfully installed node and npm, or if you already have them with these lines:
+	You can verify if you have successfully installed node and npm, or if you already have them with these lines: <br>
 `node -v`
 	`npm -v`
 
     
-2.  Clone the repo from github, by entering the following line into the terminal.
+2.  Clone the repo from github, by entering the following line into the terminal. <br>
  `git clone https://github.com/kkkgabriel/50.003ESC.git`
  
-3. In your terminal, navigate into the directory and install the packages with:
+3. In your terminal, navigate into the directory and install the packages with: <br>
 `npm install`
 
-4. Test the app by deploying the HTTP server locally
+4. Test the app by deploying the HTTP server locally <br>
 `nodemon app`
 
-5. Open your browser and key in: `127.0.0.1` in the address bar. If it doesn't work, seek help.
+5. Open your browser and key in: `localhost:3000` in the address bar. If it doesn't work, seek help.
 
 **Node.js**<br>
 Reference tutorials (These are some youtube tutorials of some basic git usages):<br>
