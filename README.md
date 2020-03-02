@@ -3,8 +3,8 @@
 1. Download Node.js and npm (npm comes together with node)
 For non ubuntu users, go to [Node.js](https://nodejs.org/en/download/package-manager/) and follow their instructions.
 For ubuntu users, use this in your terminal: <br>
-`curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
-sudo apt-get install -y nodejs`
+`curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -` <br>
+`sudo apt-get install -y nodejs`
 
 	You can verify if you have successfully installed node and npm, or if you already have them with these lines: <br>
 `node -v`
