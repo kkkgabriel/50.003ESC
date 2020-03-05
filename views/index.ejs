@@ -4,7 +4,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>My First Rainbow Application</title>
-        
+
         <script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/es6-promise/4.0.5/es6-promise.min.js"></script>
         <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
@@ -16,21 +16,29 @@
         <!-- main controller -->
         <script src="./app/app.js"></script>
 
+        <!-- Bootstrap stuff -->
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
         <!-- components -->
         <!-- <script src="./assets/js/login/login.js"></script> -->
     </head>
     <body>
         <!-- <script src="/assets/js/loader-sdk.min.js" data-main="./app/config.json"></script> -->
         
-        <h1>gabrielrulz</h1>    
+        <h1>Messages</h1>    
         <div>
-            <h2>Messages</h2>
-            <div style="height: 200px; border-style:solid; overflow: scroll;">
-                <p ng-repeat="message in conversation.messages">{{message.from.initials}}: {{message.data}}</p>
+            <div class="border border-secondary" style="height: 200px; border: groove; overflow: scroll;">
+                <button class="btn btn-primary" ng-repeat="tag in tags" ng-click="tagOnClick(tag)" value="{{tag}}" style="width: 200px;" >{{tag}}</button>
+                <p ng-repeat="message in conversation.messages" >{{message.from.initials}}: {{message.data}}</p>
             </div>
-            <input type="text" ng-model="draft" placeholder="Enter your message here" style="width: 200px;"/>
-            <button ng-click="sendMsg()">Send</button>
+            <br>
+            <input id="msgInput" class="form-control" type="text" ng-model="draft" placeholder="Enter your message here"/>
+            <button id="sendBtn" class="btn btn-success" ng-click="sendMsg()">Send</button>
         </div>
-        
     </body>
 </html>
