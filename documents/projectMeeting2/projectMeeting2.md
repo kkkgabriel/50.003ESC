@@ -1,24 +1,24 @@
-Black Box testing
+__Black Box testing__
 
-2 Types of black box testing
+2 Types of black box testing:
 Principle applied in this black box test is Equivalence class partitioning. 
 This technique , input values into the system or application are divided into different classes or system based on the similarity of outcome
 Hence, instead of using each and every input value we can now use any one value from the group/class to test the outcome. In this way, we can maintain the test coverage while we can reduce a lot of rework and most importantly the time spent.
 
 We will stick with simple testing of main functionality which ensures that complex procedure will succeed
 
-1. Functional Testing
+__1. Functional Testing__
   We will test the functionality based on different feature
   
-  Routing engine feature
-  Test  | Input | Expected output
+  #Routing engine feature
+  |Test  | Input | Expected output|
   ------|-------|--------
   1 caller and 1 agent | Caller makes a call to the agent | Connection Success
   2 caller and 1 agent | Two callers makes call at the same time | Connect 1 caller and queue the other
   1 caller and 2 agent | Caller makes a call | Connect caller to the agent with the right tag
   
-  Agent interface
-    Test  | Input | Expected output
+  __Agent interface__
+  |  Test  | Input | Expected output|
   ------|-------|--------
   Test for login | Agent enters correct username and correct password | login success
   Test for login | Agent enters correct username and correct password | login failure
@@ -32,8 +32,8 @@ We will stick with simple testing of main functionality which ensures that compl
   test ability to accept calls | Caller makes a call, Agent accepts it | Connection success
   
   
-  User Interface
-   Test  | Input | Expected output
+  __User Interface__
+  | Test  | Input | Expected output|
   ------|-------|--------
   Test for login | Caller enters a username | login success
   Test for login | Caller enters no username | login failure
@@ -47,7 +47,7 @@ We will stick with simple testing of main functionality which ensures that compl
   
 
   
-2. Non- functional Testing
+__2. Non- functional Testing__
   possible test are
   - Load testing
   - Stress testing
