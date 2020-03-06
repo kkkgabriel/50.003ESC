@@ -54,3 +54,7 @@ __2. Non- functional Testing__
   - Stress testing
   - Usability testing
   - Scalability testing
+  
+  Might want to look into misuse case.
+  tools you can use is up to you.
+  selemium for web app, can use all the time
