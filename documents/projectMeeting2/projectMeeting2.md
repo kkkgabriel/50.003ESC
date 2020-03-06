@@ -1,16 +1,16 @@
 __Black Box testing__
 
-2 Types of black box testing:
+__2 Types of black box testing__
 Principle applied in this black box test is Equivalence class partitioning. 
 This technique , input values into the system or application are divided into different classes or system based on the similarity of outcome
 Hence, instead of using each and every input value we can now use any one value from the group/class to test the outcome. In this way, we can maintain the test coverage while we can reduce a lot of rework and most importantly the time spent.
 
 We will stick with simple testing of main functionality which ensures that complex procedure will succeed
 
-__1. Functional Testing__
+  __1. Functional Testing__
   We will test the functionality based on different feature
   
-  #Routing engine feature
+  __Routing engine feature__
   |Test  | Input | Expected output|
   ------|-------|--------
   1 caller and 1 agent | Caller makes a call to the agent | Connection Success
