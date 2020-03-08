@@ -1,4 +1,10 @@
 __Changes in requirement__
+We are staying with the same requirements as documented in project meeting 1:
+
+We have decided to model for a telco company, and we have identified a few categories that
+we can work on. We have decided to design our routing engine as a filter system using
+matching tags that assigns customers to the appropriate agents. We will design a Web UI
+that shows a simulation of our routing engine.
 
 __Formal documentation of Use case__
 
