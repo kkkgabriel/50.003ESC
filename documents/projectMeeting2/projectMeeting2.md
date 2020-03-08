@@ -9,6 +9,7 @@ that shows a simulation of our routing engine.
 __Formal documentation of Use case__
 
 __Class diagram__
+![classdiagram](classdia.jpg)
 
 __Sequence diagram__
 
