@@ -1,3 +1,11 @@
+__Changes in requirement__
+
+__Formal documentation of Use case__
+
+__Class diagram__
+
+__Sequence diagram__
+
 __Black Box testing__
 
 __2 Types of black box testing__
@@ -58,3 +66,5 @@ __2. Non- functional Testing__
   Might want to look into misuse case.
   tools you can use is up to you.
   selemium for web app, can use all the time
+
+__Workload distribution__
