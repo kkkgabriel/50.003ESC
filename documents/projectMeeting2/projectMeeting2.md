@@ -12,7 +12,7 @@ __Class diagram__
 ![classdiagram](classdia.jpg)
 
 __Sequence diagram__
-![sequenceDiagram](sequenceDiagram.pdf)
+![sequenceDiagram](sequenceDiagram.jpg)
 
 __Black Box testing__
 
