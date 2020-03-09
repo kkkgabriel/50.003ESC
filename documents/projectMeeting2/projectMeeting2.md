@@ -1,4 +1,5 @@
-__Changes in requirement__
+For a full view of this .md document, go to https://github.com/kkkgabriel/50.003ESC/blob/master/documents/projectMeeting2/projectMeeting2.mds
+__Changes in requirement__<br>
 We are staying with the same requirements as documented in project meeting 1:
 
 We have decided to model for a telco company, and we have identified a few categories that
@@ -77,3 +78,9 @@ __2. Non- functional Testing__
   selemium for web app, can use all the time
 
 __Workload distribution__
+Gabriel Pang - Research on DialogFlow API, KentoUI interface
+Ryan Sacatani - Documentation of black box testing
+Tey Shi Ying - Documentation of Class Diagram and database configuration
+Mario Josephan - Documentation of use case diagram and research on Rainbow API
+Gabriel Koh - Documentation of sequence diagram and research on Rainbow API
+For more details, refer to commit history on https://github.com/kkkgabriel/50.003ESC
