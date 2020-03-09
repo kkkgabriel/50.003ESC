@@ -7,6 +7,7 @@ matching tags that assigns customers to the appropriate agents. We will design a
 that shows a simulation of our routing engine.
 
 __Formal documentation of Use case__
+![useCaseDiagram](useCaseDiagram.jpg)
 
 __Class diagram__
 ![classdiagram](classdia.jpg)
