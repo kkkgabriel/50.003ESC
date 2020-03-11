@@ -10,12 +10,20 @@
     "build": "brunch build --production"
   },
   "dependencies": {
+    "@progress/kendo-react-buttons": "^3.11.0",
+    "@progress/kendo-react-conversational-ui": "^3.11.0",
+    "@progress/kendo-react-dialogs": "^3.11.0",
+    "@progress/kendo-react-intl": "^3.11.0",
+    "@progress/kendo-theme-bootstrap": "^4.11.0",
+    "@progress/kendo-theme-default": "^4.13.0",
     "angular": "^1.5.7",
+    "bootstrap": "^4.4.1",
     "jquery": "^3.2.1",
     "moment": "^2.19.1",
+    "popper.js": "^1.16.1",
     "rainbow-web-sdk": "^1.40.0",
-    "react": "^15.6.2",
-    "react-dom": "^15.6.2"
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0"
   },
   "devDependencies": {
     "auto-reload-brunch": "^2",
