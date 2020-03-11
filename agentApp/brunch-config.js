@@ -15,7 +15,8 @@ module.exports = {
         },
     
         "plugins": {
-            "babel": {presets: ['latest', 'react']},
+            "babel": {presets: ['env','react'], plugins: ['transform-class-properties','transform-object-rest-spread']},
+            "plugins": ["@babel/plugin-proposal-object-rest-spread"],
             "copycat":{
                 "sdk" : ["node_modules/rainbow-web-sdk/dist/lib/vendors-sdk.min.js", "node_modules/rainbow-web-sdk/dist/lib/rainbow-sdk.min.js"],
                 verbose : true, //shows each file that is copied to the destination directory

@@ -42,9 +42,9 @@ app.controller("mainController", [
 	    var onLoaded = function onLoaded() {
 			console.log("[DEMO] :: Rainbow SDK has been loaded!");
 
-			var myRainbowLogin = "kkkgabriel@hotmail.com";
+			var myRainbowLogin = "HomeLine@gmail.com";
 	        var myRainbowPassword = "Longpassword!1";
-	        var strId = "5e52a877b4528b74a00c92df";
+	        var strId = "5e600a2ad8084c29e64eb46c";
 
 			sdk
 	        .initialize(appId, appSecret)
