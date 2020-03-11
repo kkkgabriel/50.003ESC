@@ -7,8 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // do your setup here
     console.log("[DEMO] :: Starter-Kit of the Rainbow SDK for Web with React started!");
   
-    var applicationID = "", 
-        applicationSecret = "";
+    // var applicationID = "", 
+    //     applicationSecret = "";
+
+    var applicationID = "dcb692b0564b11eabb3887f44e39165a", 
+        applicationSecret = "BrxZMv6ThPI1ZfdSRvpWhj6BZudBtQzI6dxHMmqV6uDEGmwO6WuvSpkfmA64cEhS";
 
     /* Bootstrap the SDK */
     angular.bootstrap(document, ["sdk"]).get("rainbowSDK");
