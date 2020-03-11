@@ -117,7 +117,6 @@
 
 (function() {
 var global = typeof window === 'undefined' ? this : window;
-var process;
 var __makeRelativeRequire = function(require, mappings, pref) {
   var none = {};
   var tryReq = function(name, pref) {
@@ -150,7 +149,7 @@ var __makeRelativeRequire = function(require, mappings, pref) {
   }
 };
 require.register("components/App.jsx", function(exports, require, module) {
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -158,9 +157,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = require("react");
+var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
+
+var _Login = require('./Login/Login');
+
+var _Login2 = _interopRequireDefault(_Login);
+
+var _reactRouterDom = require('react-router-dom');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -185,27 +190,20 @@ var App = function (_React$Component) {
     }
 
     _createClass(App, [{
-        key: "render",
+        key: 'render',
         value: function render() {
             return _react2.default.createElement(
-                "div",
-                { id: "content" },
+                'div',
+                { id: 'content' },
                 _react2.default.createElement(
-                    "h5",
+                    _reactRouterDom.BrowserRouter,
                     null,
-                    "Time to ",
                     _react2.default.createElement(
-                        "a",
-                        { href: "https://api.openrainbow.com/" },
-                        "Play with SDK and APIs"
-                    ),
-                    "."
-                ),
-                _react2.default.createElement(
-                    "p",
-                    null,
-                    "Version ",
-                    this.state.version
+                        _reactRouterDom.Switch,
+                        null,
+                        _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/", component: _Login2.default }),
+                        _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/home" })
+                    )
                 )
             );
         }
@@ -215,6 +213,127 @@ var App = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = App;
+});
+
+;require.register("components/Home/Home.js", function(exports, require, module) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouterDom = require('react-router-dom');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Home = function Home(props) {
+    return _react2.default.createElement(
+        'div',
+        null,
+        'Hi i am in Home'
+    );
+};
+
+exports.default = Home;
+});
+
+require.register("components/Login/Login.js", function(exports, require, module) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouterDom = require('react-router-dom');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+// import axios from 'axios'
+// import { Form, Field } from '@progress/kendo-react-form';
+// import { Input } from '@progress/kendo-react-inputs';
+var Login = function (_Component) {
+    _inherits(Login, _Component);
+
+    function Login() {
+        var _ref;
+
+        var _temp, _this, _ret;
+
+        _classCallCheck(this, Login);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Login.__proto__ || Object.getPrototypeOf(Login)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+            username: '',
+            password: ''
+        }, _this.loginHandler = function () {
+            console.log(_this.state);
+            // var rainbowLogin = "mario.kosasih@gmail.com"
+            // var rainbowPassword = "6OCJc97dWp*2"
+            rainbowSDK.connection.signin(_this.state.username, _this.state.password).then(function (account) {
+                console.log("Successful Login");
+                console.log(account);
+                // route to agent page
+                console.log(_this.props);
+                _this.props.history.push('/home');
+            }).catch(function (err) {
+                console.log("failed to login");
+            });
+        }, _this.onInputChange = function (event, stateKey) {
+            var login = _extends({}, _this.state);
+            login[stateKey] = event.target.value;
+            _this.setState(login);
+        }, _temp), _possibleConstructorReturn(_this, _ret);
+    }
+
+    _createClass(Login, [{
+        key: 'render',
+        value: function render() {
+            var _this2 = this;
+
+            console.log(rainbowSDK);
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement('input', { type: 'text', value: this.state.username, onChange: function onChange(event) {
+                        return _this2.onInputChange(event, 'username');
+                    } }),
+                _react2.default.createElement('input', { type: 'text', value: this.state.password, onChange: function onChange(event) {
+                        return _this2.onInputChange(event, 'password');
+                    } }),
+                _react2.default.createElement(
+                    'button',
+                    { onClick: this.loginHandler },
+                    'Login'
+                )
+            );
+        }
+    }]);
+
+    return Login;
+}(_react.Component);
+
+exports.default = (0, _reactRouterDom.withRouter)(Login);
 });
 
 ;require.register("initialize.js", function(exports, require, module) {
@@ -239,8 +358,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // do your setup here
     console.log("[DEMO] :: Starter-Kit of the Rainbow SDK for Web with React started!");
 
-    var applicationID = "",
-        applicationSecret = "";
+    var appId = "dcb692b0564b11eabb3887f44e39165a";
+    var appSecret = "BrxZMv6ThPI1ZfdSRvpWhj6BZudBtQzI6dxHMmqV6uDEGmwO6WuvSpkfmA64cEhS";
 
     /* Bootstrap the SDK */
     angular.bootstrap(document, ["sdk"]).get("rainbowSDK");
@@ -256,7 +375,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var onLoaded = function onLoaded() {
         console.log("[DEMO] :: On SDK Loaded !");
 
-        rainbowSDK.initialize(applicationID, applicationSecret).then(function () {
+        rainbowSDK.initialize(appId, appSecret).then(function () {
             console.log("[DEMO] :: Rainbow SDK is initialized!");
         }).catch(function (err) {
             console.log("[DEMO] :: Something went wrong with the SDK...", err);
@@ -274,7 +393,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 });
 
-require.alias("process/browser.js", "process");process = require('process');require.register("___globals___", function(exports, require, module) {
+require.register("___globals___", function(exports, require, module) {
   
 
 // Auto-loaded modules from config.npm.globals.

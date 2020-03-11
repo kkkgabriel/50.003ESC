@@ -1,5 +1,6 @@
 import React from 'react';
-
+import Login from './Login/Login'
+import {BrowserRouter, Switch, Route} from 'react-router-dom'
 export default class App extends React.Component {
 
     constructor (props) {
@@ -11,10 +12,14 @@ export default class App extends React.Component {
 
     render() {
         return (
-            <div id="content">
-            <h5>Time to <a href="https://api.openrainbow.com/">Play with SDK and APIs</a>.</h5>
-            <p>Version {this.state.version}</p>
-            </div>
+        <div id="content">
+            <BrowserRouter>
+                <Switch>
+                    <Route exact path={"/"} component={Login}/>
+                    <Route exact path={"/home"} />
+                </Switch>
+            </BrowserRouter>
+        </div>
         );
     }
 }

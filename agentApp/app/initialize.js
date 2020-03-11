@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // do your setup here
     console.log("[DEMO] :: Starter-Kit of the Rainbow SDK for Web with React started!");
   
-    var applicationID = "", 
-        applicationSecret = "";
+    var appId = "dcb692b0564b11eabb3887f44e39165a";
+    var appSecret = "BrxZMv6ThPI1ZfdSRvpWhj6BZudBtQzI6dxHMmqV6uDEGmwO6WuvSpkfmA64cEhS";
 
     /* Bootstrap the SDK */
     angular.bootstrap(document, ["sdk"]).get("rainbowSDK");
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     var onLoaded = function onLoaded() {
         console.log("[DEMO] :: On SDK Loaded !");
 
-        rainbowSDK.initialize(applicationID, applicationSecret).then(function() {
+        rainbowSDK.initialize(appId, appSecret).then(function() {
             console.log("[DEMO] :: Rainbow SDK is initialized!");
         }).catch(function(err) {
             console.log("[DEMO] :: Something went wrong with the SDK...", err);
@@ -39,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* Load the SDK */
     rainbowSDK.load();
-
-
-  
 });
+
+
