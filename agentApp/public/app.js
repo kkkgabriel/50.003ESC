@@ -157,17 +157,21 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Login = require('./Login/Login');
+var _kendoReactConversationalUi = require('@progress/kendo-react-conversational-ui');
 
-var _Login2 = _interopRequireDefault(_Login);
-
-var _reactRouterDom = require('react-router-dom');
+var _kendoReactDialogs = require('@progress/kendo-react-dialogs');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -183,17 +187,112 @@ var App = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
-        _this.state = {
-            "version": rainbowSDK.version()
+        _this.rainbowSignIn();
+        _this.user = {
+            name: "gabriel",
+            id: 1
         };
+        _this.bot = {
+            name: "other contact name",
+            id: 0
+        };
+        _this.state = {
+            "version": rainbowSDK.version(),
+            visible: false,
+            "isAvailable": false,
+            messages: [{
+                author: _this.bot,
+                timestamp: new Date(),
+                text: "Hello there."
+            }]
+        };
+        _this.addNewMessage = _this.addNewMessage.bind(_this);
+        _this.sendToRainbow = _this.sendToRainbow.bind(_this);
+        _this.toggleDialog = _this.toggleDialog.bind(_this);
+        _this.toggleisAvailable = _this.toggleisAvailable.bind(_this);
+        _this.reroute = _this.reroute.bind(_this);
+        _this.updateIncomingMessage = _this.updateIncomingMessage.bind(_this);
+        _this.rainbowSignIn = _this.rainbowSignIn.bind(_this);
+
+        var onNewMessageReceived = function onNewMessageReceived(event) {
+            console.log("this works");
+            this.toggleDialog();
+        };
+        document.addEventListener(rainbowSDK.im.RAINBOW_ONNEWIMMESSAGERECEIVED, onNewMessageReceived);
         return _this;
     }
 
     _createClass(App, [{
+<<<<<<< HEAD
+=======
+        key: 'rainbowSignIn',
+        value: function rainbowSignIn() {
+            var rainbowLogin = "HomeLine@gmail.com";
+            var rainbowPassword = "Longpassword!1";
+            rainbowSDK.connection.signin(rainbowLogin, rainbowPassword).then(function (account) {
+                console.log("this works!");
+            }).catch(function (err) {
+                console.log(err);
+            });
+        }
+    }, {
+        key: 'reroute',
+        value: function reroute() {
+            console.log("this is rerouting");
+        }
+    }, {
+        key: 'toggleDialog',
+        value: function toggleDialog() {
+            this.setState({
+                visible: !this.state.visible
+            });
+        }
+    }, {
+        key: 'toggleisAvailable',
+        value: function toggleisAvailable() {
+            this.setState({
+                "isAvailable": !this.state.isAvailable,
+                visible: !this.state.visible
+            });
+        }
+    }, {
+        key: 'addNewMessage',
+        value: function addNewMessage(event) {
+            var myResponse = Object.assign({}, event.message);
+            this.setState(function (prevState) {
+                return {
+                    messages: [].concat(_toConsumableArray(prevState.messages), [myResponse])
+                };
+            });
+            this.sendToRainbow(event.message);
+        }
+    }, {
+        key: 'sendToRainbow',
+        value: function sendToRainbow(question) {
+            console.log("to add in rainbow send message here");
+        }
+    }, {
+        key: 'updateIncomingMessage',
+        value: function updateIncomingMessage() {
+            var theirResponse = {
+                author: this.bot,
+                text: "update text here",
+                timestamp: new Date()
+            };
+            this.setState(function (prevState) {
+                return {
+                    messages: [].concat(_toConsumableArray(prevState.messages), [theirResponse])
+                };
+            });
+        }
+    }, {
+>>>>>>> omnifarter
         key: 'render',
         value: function render() {
+
             return _react2.default.createElement(
                 'div',
+<<<<<<< HEAD
                 { id: 'content' },
                 _react2.default.createElement(
                     _reactRouterDom.BrowserRouter,
@@ -205,6 +304,57 @@ var App = function (_React$Component) {
                         _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/home" })
                     )
                 )
+=======
+                null,
+                _react2.default.createElement(
+                    'button',
+                    { className: 'k-button', onClick: this.toggleDialog },
+                    'Open Dialog'
+                ),
+                this.state.visible && _react2.default.createElement(
+                    _kendoReactDialogs.Dialog,
+                    { title: "Please confirm", onClose: this.toggleDialog },
+                    _react2.default.createElement(
+                        'p',
+                        { style: { margin: "25px", textAlign: "center" } },
+                        this.user["name"],
+                        ' is trying to connect to you. Do you want to accept?'
+                    ),
+                    _react2.default.createElement(
+                        _kendoReactDialogs.DialogActionsBar,
+                        null,
+                        _react2.default.createElement(
+                            'button',
+                            { className: 'k-button', onClick: this.toggleDialog },
+                            'Decline'
+                        ),
+                        _react2.default.createElement(
+                            'button',
+                            { className: 'k-button', onClick: this.toggleisAvailable },
+                            'Accept'
+                        )
+                    )
+                ),
+                this.state.isAvailable ? _react2.default.createElement(
+                    'div',
+                    null,
+                    _react2.default.createElement(_kendoReactConversationalUi.Chat, { user: this.user,
+                        messages: this.state.messages,
+                        onMessageSend: this.addNewMessage,
+                        placeholder: "Type a message...",
+                        width: 400 }),
+                    _react2.default.createElement(
+                        'button',
+                        { className: 'k-button', onClick: this.reroute },
+                        'Reroute '
+                    ),
+                    _react2.default.createElement(
+                        'button',
+                        { className: 'k-button', onClick: this.updateIncomingMessage },
+                        ' updateIncomingMessage'
+                    )
+                ) : null
+>>>>>>> omnifarter
             );
         }
     }]);
@@ -358,8 +508,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // do your setup here
     console.log("[DEMO] :: Starter-Kit of the Rainbow SDK for Web with React started!");
 
+<<<<<<< HEAD
     var appId = "dcb692b0564b11eabb3887f44e39165a";
     var appSecret = "BrxZMv6ThPI1ZfdSRvpWhj6BZudBtQzI6dxHMmqV6uDEGmwO6WuvSpkfmA64cEhS";
+=======
+    var applicationID = "dcb692b0564b11eabb3887f44e39165a",
+        applicationSecret = "BrxZMv6ThPI1ZfdSRvpWhj6BZudBtQzI6dxHMmqV6uDEGmwO6WuvSpkfmA64cEhS";
+>>>>>>> omnifarter
 
     /* Bootstrap the SDK */
     angular.bootstrap(document, ["sdk"]).get("rainbowSDK");
