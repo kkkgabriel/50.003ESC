@@ -6,13 +6,15 @@ import { Dialog, DialogActionsBar } from '@progress/kendo-react-dialogs';
 export default class App extends React.Component {
     constructor(props) {
         super(props);
+        this.rainbowSignIn();
         this.user = {
-            name:"Gabriel",
-            id: 1,
-            avatarUrl: "https://via.placeholder.com/24/008000/008000.png"
-            
+            name:"gabriel",
+            id: 1,            
         };
-        this.bot = { id: 0 };
+        this.bot = {
+            name:"other contact name",
+             id: 0
+            };
         this.state = {
             "version": rainbowSDK.version(),
             visible:false,
@@ -20,27 +22,40 @@ export default class App extends React.Component {
             messages: [
                 {
                     author: this.bot,
-                    suggestedActions: [
-                        {
-                            type: 'reply',
-                            value: 'Oh, really?'
-                        }, {
-                            type: 'reply',
-                            value: 'Thanks, but this is boring.'
-                        }
-                    ],
                     timestamp: new Date(),
-                    text: "Hello, this is a demo bot. I don't do much, but I can count symbols!"
+                    text: "Hello there."
                 }
             ]
         };
         this.addNewMessage = this.addNewMessage.bind(this);
-        this.countReplayLength= this.countReplayLength.bind(this);        
+        this.sendToRainbow= this.sendToRainbow.bind(this);        
         this.toggleDialog = this.toggleDialog.bind(this);
         this.toggleisAvailable = this.toggleisAvailable.bind(this);
         this.reroute = this.reroute.bind(this);
+        this.updateIncomingMessage = this.updateIncomingMessage.bind(this);
+        this.rainbowSignIn = this.rainbowSignIn.bind(this);
+
+        let onNewMessageReceived = function(event){
+            console.log("this works")
+            this.toggleDialog();
+            
+        }
+        document.addEventListener(rainbowSDK.im.RAINBOW_ONNEWIMMESSAGERECEIVED, onNewMessageReceived)
     }
 
+
+    rainbowSignIn(){
+        var rainbowLogin = "HomeLine@gmail.com";
+        var rainbowPassword = "Longpassword!1";
+        rainbowSDK.connection.signin(rainbowLogin,rainbowPassword)
+        .then(function(account){
+            console.log("this works!")
+        })
+        .catch(function(err){
+            console.log(err)
+        })
+
+    }
     reroute(){
         console.log("this is rerouting");
     }
@@ -57,33 +72,35 @@ export default class App extends React.Component {
         })
     }
     addNewMessage(event) {
-        let botResponce = Object.assign({}, event.message);
-        console.log(botResponce)
-        console.log(event.message.text)
-        this.countReplayLength(event.message.text)
-        botResponce.text = this.countReplayLength(event.message.text);
-        botResponce.author = this.bot;
+        let myResponse = Object.assign({}, event.message);
         this.setState((prevState) => ({
             messages: [
                 ...prevState.messages,
-                event.message
+                myResponse
             ]
         }));
-        setTimeout(() => {
-            this.setState(prevState => ({
-                messages: [
-                    ...prevState.messages,
-                    botResponce
-                ]
-            }));
-        }, 1000);
+        this.sendToRainbow(event.message);
     };
 
-    countReplayLength(question){
-        console.log("this works")
-        let length = question.length;
-        let answer = question + " contains exactly " + length + " symbols.";
-        return answer;
+
+    sendToRainbow(question){
+        console.log("to add in rainbow send message here")
+        
+    }
+
+    updateIncomingMessage(){
+        let theirResponse = {
+            author: this.bot,
+            text: "update text here",
+            timestamp: new Date()
+        }
+        this.setState((prevState) => ({
+            messages: [
+                ...prevState.messages,
+                theirResponse
+            ]
+        }));
+
     }
 
     render() {
@@ -107,6 +124,7 @@ export default class App extends React.Component {
                     width={400}>
                 </Chat>
                 <button className="k-button" onClick={this.reroute}>Reroute </button>
+                <button className="k-button" onClick={this.updateIncomingMessage}> updateIncomingMessage</button>
                 </div>
             ): null}
             </div>

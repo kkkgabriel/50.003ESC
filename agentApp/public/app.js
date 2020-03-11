@@ -187,39 +187,53 @@ var App = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
+        _this.rainbowSignIn();
         _this.user = {
-            name: "Gabriel",
-            id: 1,
-            avatarUrl: "https://via.placeholder.com/24/008000/008000.png"
-
+            name: "gabriel",
+            id: 1
         };
-        _this.bot = { id: 0 };
+        _this.bot = {
+            name: "other contact name",
+            id: 0
+        };
         _this.state = {
             "version": rainbowSDK.version(),
             visible: false,
             "isAvailable": false,
             messages: [{
                 author: _this.bot,
-                suggestedActions: [{
-                    type: 'reply',
-                    value: 'Oh, really?'
-                }, {
-                    type: 'reply',
-                    value: 'Thanks, but this is boring.'
-                }],
                 timestamp: new Date(),
-                text: "Hello, this is a demo bot. I don't do much, but I can count symbols!"
+                text: "Hello there."
             }]
         };
         _this.addNewMessage = _this.addNewMessage.bind(_this);
-        _this.countReplayLength = _this.countReplayLength.bind(_this);
+        _this.sendToRainbow = _this.sendToRainbow.bind(_this);
         _this.toggleDialog = _this.toggleDialog.bind(_this);
         _this.toggleisAvailable = _this.toggleisAvailable.bind(_this);
         _this.reroute = _this.reroute.bind(_this);
+        _this.updateIncomingMessage = _this.updateIncomingMessage.bind(_this);
+        _this.rainbowSignIn = _this.rainbowSignIn.bind(_this);
+
+        var onNewMessageReceived = function onNewMessageReceived(event) {
+            console.log("this works");
+            this.toggleDialog();
+        };
+        document.addEventListener(rainbowSDK.im.RAINBOW_ONNEWIMMESSAGERECEIVED, onNewMessageReceived);
         return _this;
     }
 
     _createClass(App, [{
+        key: 'rainbowSignIn',
+        value: function rainbowSignIn() {
+            var rainbowLogin = "HomeLine@gmail.com";
+            var rainbowPassword = "Longpassword!1";
+            rainbowSDK.connection.signin(rainbowLogin, rainbowPassword).then(function (account) {
+                console.log("this works!");
+            }).catch(function (err) {
+                console.log(err);
+            });
+        }
+    }, {
         key: 'reroute',
         value: function reroute() {
             console.log("this is rerouting");
@@ -242,34 +256,32 @@ var App = function (_React$Component) {
     }, {
         key: 'addNewMessage',
         value: function addNewMessage(event) {
-            var _this2 = this;
-
-            var botResponce = Object.assign({}, event.message);
-            console.log(botResponce);
-            console.log(event.message.text);
-            this.countReplayLength(event.message.text);
-            botResponce.text = this.countReplayLength(event.message.text);
-            botResponce.author = this.bot;
+            var myResponse = Object.assign({}, event.message);
             this.setState(function (prevState) {
                 return {
-                    messages: [].concat(_toConsumableArray(prevState.messages), [event.message])
+                    messages: [].concat(_toConsumableArray(prevState.messages), [myResponse])
                 };
             });
-            setTimeout(function () {
-                _this2.setState(function (prevState) {
-                    return {
-                        messages: [].concat(_toConsumableArray(prevState.messages), [botResponce])
-                    };
-                });
-            }, 1000);
+            this.sendToRainbow(event.message);
         }
     }, {
-        key: 'countReplayLength',
-        value: function countReplayLength(question) {
-            console.log("this works");
-            var length = question.length;
-            var answer = question + " contains exactly " + length + " symbols.";
-            return answer;
+        key: 'sendToRainbow',
+        value: function sendToRainbow(question) {
+            console.log("to add in rainbow send message here");
+        }
+    }, {
+        key: 'updateIncomingMessage',
+        value: function updateIncomingMessage() {
+            var theirResponse = {
+                author: this.bot,
+                text: "update text here",
+                timestamp: new Date()
+            };
+            this.setState(function (prevState) {
+                return {
+                    messages: [].concat(_toConsumableArray(prevState.messages), [theirResponse])
+                };
+            });
         }
     }, {
         key: 'render',
@@ -319,6 +331,11 @@ var App = function (_React$Component) {
                         'button',
                         { className: 'k-button', onClick: this.reroute },
                         'Reroute '
+                    ),
+                    _react2.default.createElement(
+                        'button',
+                        { className: 'k-button', onClick: this.updateIncomingMessage },
+                        ' updateIncomingMessage'
                     )
                 ) : null
             );
