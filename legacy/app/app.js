@@ -61,6 +61,7 @@ app.controller("mainController", [
 					.then(function(contact){
 						console.log("found contact");
 						console.log(contact)
+						$scope.company = contact.company;
 
 						sdk.conversations	
 						.openConversationForContact(contact)
@@ -91,6 +92,21 @@ app.controller("mainController", [
 				console.log(err);
 	        });
 	    };
+
+	    $rootScope.login = function(){
+	    	console.log("Log in button pressed");
+
+	    	var strLogin = "userninenine";
+	    	var strFirstName = "user";
+	    	var strLastName = "ninenine";
+	    	var strPassword = "Longpassword!1";
+	    	var company = $scope.company;
+	    	var tags;
+	    	var r = sdk
+	    	.admin
+	    	.createUserForCompany(strLogin, strFirstName, strLastName, strPassword, company, tags);
+	    	console.log(r);
+	    }
 
 	    $rootScope.sendMsg = function(){
 			var strMessage = $scope.draft;
