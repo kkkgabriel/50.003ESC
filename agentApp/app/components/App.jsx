@@ -108,11 +108,6 @@ export default class App extends React.Component {
     render() {
         
         return (
-<<<<<<< HEAD
-            <div id="content">
-                <Conversations/>
-            <p>Version {this.state.version}</p>
-=======
             <div>
                 <button className="k-button" onClick={this.toggleDialog}>Open Dialog</button>
                 {this.state.visible && <Dialog title={"Please confirm"} onClose={this.toggleDialog}>
@@ -134,7 +129,6 @@ export default class App extends React.Component {
                 <button className="k-button" onClick={this.updateIncomingMessage}> updateIncomingMessage</button>
                 </div>
             ): null}
->>>>>>> mjosephan2
             </div>
         );
     }
