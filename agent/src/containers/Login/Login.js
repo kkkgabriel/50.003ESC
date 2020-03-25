@@ -12,6 +12,10 @@ class Login extends Component{
         email: '',
         password: ''
     }
+
+    componentDidMount(){
+        console.log(window.rainbowSDK)
+    }
     loginHandler = (event) => {
         event.preventDefault()
         // var rainbowLogin = "mario.kosasih@gmail.com"
@@ -26,7 +30,7 @@ class Login extends Component{
                 this.props.history.push('/home')
             })
             .catch(err => {
-                this.props.authFail(err)
+                this.props.authFail(err.label)
                 console.log("failed to login")
             })
     }
@@ -38,7 +42,6 @@ class Login extends Component{
         console.log(login)
     }
     render() {
-        console.log(window.rainbowSDK)
         return (
             <div className={`row ${classes.Login}`}>
             <div className="col-xs-12 col-sm-6 offset-sm-3">

@@ -49,8 +49,6 @@ class Conversations extends Component {
         console.log(account)
 
         var conversations = window.rainbowSDK.conversations.getAllConversations();
-        console.log(conversations);
-
         this.setState({
             conversations: conversations}
         )
@@ -62,7 +60,7 @@ class Conversations extends Component {
     conversationsChangedHandler(){
         console.log("conversationsChangedHandler triggered"); 
         // console.log(this); 
-        // console.log(this.state); 
+        console.log(this.state); 
         // console.log(this.state.conversations);
 
         var conversations = this.state.conversations;
@@ -119,6 +117,7 @@ class Conversations extends Component {
     }
 
     findNewConversation(conversations){
+        console.log(this.state.conversations)
         var i = 0;
         while (i < conversations.length ){
             var l = conversations[i].messages.length;
@@ -165,6 +164,7 @@ class Conversations extends Component {
                 <Redirect to="/"/>
             )
         }
+        console.log(this.state.conversations)
         return (
             <div>
                 {redirect}
