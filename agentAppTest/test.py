@@ -35,6 +35,24 @@ class PythonOrgSearch(unittest.TestCase):
         elem_accept = self.driver_agent.find_element_by_xpath("//button[contains(text(),'Accept')]")
         self.actions_agent.click(elem_accept).perform()
         
+    def test_login_success(self):
+        self.driver_agent.get("http://127.0.0.1:3333")
+        self.actions_agent = ActionChains(self.driver_agent)
+        time.sleep(10)
+        elem_username = self.driver_agent.find_element_by_xpath("//input[1]")
+        elem_username.send_keys("AccountsNBills@gmail.com")
+        time.sleep(2)
+        elem_password = self.driver_agent.find_element_by_xpath("//input[2]")
+        elem_password.send_keys("Longpassword!1")
+        time.sleep(2)
+        elem_login = self.driver_agent.find_element_by_xpath("//button[contains(text(),'Login')]")
+        self.actions_agent.click(elem_login).perform()
+        time.sleep(2)
+        if self.driver_agent.current_url == "http://127.0.0.1:3333/home":
+            print("pass test_login_success")
+        else:
+            print("failed test_login_success")
+    
     def test_accept_incoming_convo(self):
         self.establishing_connection()
         #check for open dialog
