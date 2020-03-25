@@ -12,13 +12,25 @@ class PythonOrgSearch(unittest.TestCase):
     def setUp(self):
         self.driver_agent = webdriver.Chrome()
         self.driver_user = webdriver.Chrome()
+    def log_in_success(self):
+        self.driver_agent.get("http://127.0.0.1:3001")
+        self.actions_agent = ActionChains(self.driver_agent)
+        time.sleep(10)
+        elem_username = self.driver_agent.find_element_by_name("email")
+        elem_username.send_keys("AccountsNBills@gmail.com")
+        time.sleep(2)
+        elem_password = self.driver_agent.find_element_by_name("password")
+        elem_password.send_keys("Longpassword!1")
+        time.sleep(2)
+        elem_login = self.driver_agent.find_element_by_xpath("//input[@class='k-button k-primary']")
+        self.actions_agent.click(elem_login).perform()
+        time.sleep(2)
 
     def establishing_connection(self):
         #initialising
-        self.actions_agent = ActionChains(self.driver_agent)
+        self.log_in_success()
         self.actions_user = ActionChains(self.driver_user)
         self.driver_user.get("http://127.0.0.1:3000")
-        self.driver_agent.get("http://127.0.0.1:3333/home")
         time.sleep(10)
         #establishing connection through start
         elem_accounts_and_bills = self.driver_user.find_element_by_xpath("//button[contains(text(),'Accounts and Bills')]")
@@ -32,23 +44,25 @@ class PythonOrgSearch(unittest.TestCase):
     def ongoing_conversation(self):
         self.establishing_connection()
         time.sleep(2)
+        self.actions_agent = ActionChains(self.driver_agent)
+
         elem_accept = self.driver_agent.find_element_by_xpath("//button[contains(text(),'Accept')]")
         self.actions_agent.click(elem_accept).perform()
         
     def test_login_success(self):
-        self.driver_agent.get("http://127.0.0.1:3333")
+        self.driver_agent.get("http://127.0.0.1:3001")
         self.actions_agent = ActionChains(self.driver_agent)
         time.sleep(10)
-        elem_username = self.driver_agent.find_element_by_xpath("//input[1]")
+        elem_username = self.driver_agent.find_element_by_name("email")
         elem_username.send_keys("AccountsNBills@gmail.com")
         time.sleep(2)
-        elem_password = self.driver_agent.find_element_by_xpath("//input[2]")
+        elem_password = self.driver_agent.find_element_by_name("password")
         elem_password.send_keys("Longpassword!1")
         time.sleep(2)
-        elem_login = self.driver_agent.find_element_by_xpath("//button[contains(text(),'Login')]")
+        elem_login = self.driver_agent.find_element_by_xpath("//input[@class='k-button k-primary']")
         self.actions_agent.click(elem_login).perform()
-        time.sleep(2)
-        if self.driver_agent.current_url == "http://127.0.0.1:3333/home":
+        time.sleep(10)
+        if self.driver_agent.current_url == "http://127.0.0.1:3001/home":
             print("pass test_login_success")
         else:
             print("failed test_login_success")
@@ -56,6 +70,8 @@ class PythonOrgSearch(unittest.TestCase):
     def test_accept_incoming_convo(self):
         self.establishing_connection()
         #check for open dialog
+        self.actions_agent = ActionChains(self.driver_agent)
+
         time.sleep(2)
         try:
             elem_accept = self.driver_agent.find_element_by_xpath("//button[contains(text(),'Accept')]")
@@ -69,11 +85,13 @@ class PythonOrgSearch(unittest.TestCase):
             elem_chat = self.driver_agent.find_element_by_xpath("//div[@class='k-widget k-chat']")
             print("passed test_accept_incoming_convo")
         except:
-            print("failed test")
+            print("failed test_accept_incoming_convo")
 
     def test_decline_incoming_convo(self):
         self.establishing_connection()
         #check for open dialog
+        self.actions_agent = ActionChains(self.driver_agent)
+
         time.sleep(2)
         try:
             elem_accept = self.driver_agent.find_element_by_xpath("//button[contains(text(),'Decline')]")
