@@ -1,0 +1,40 @@
+.Login{
+    width:100%;
+    margin-top: 5rem;
+    z-index: 1;
+}
+
+.spinner_bg{
+    background-color: rgba(237, 237, 237, 0.5);
+    z-index: 10;
+    position: absolute;
+    width: 100%;
+    top: 0px;
+}
+.spinner {
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    z-index: 20;
+  }
+  
+  .spinner:after {
+    animation: changeContent .8s linear infinite;
+    display: block;
+    content: "⠋";
+    font-size: 80px;
+  }
+  
+  @keyframes changeContent {
+    10% { content: "⠙"; }
+    20% { content: "⠹"; }
+    30% { content: "⠸"; }
+    40% { content: "⠼"; }
+    50% { content: "⠴"; }
+    60% { content: "⠦"; }
+    70% { content: "⠧"; }
+    80% { content: "⠇"; }
+    90% { content: "⠏"; }
+  }

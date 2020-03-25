@@ -1,9 +1,4 @@
-import ReactDOM from 'react-dom';
-import React from 'react';
-import App from 'components/App';
-
-document.addEventListener('DOMContentLoaded', () => {
-
+$(function() {
     // do your setup here
     console.log("[DEMO] :: Starter-Kit of the Rainbow SDK for Web with React started!");
   
@@ -17,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     var onReady = function onReady() {
         console.log("[DEMO] :: On SDK Ready !");
         // do something when the SDK is ready
-        ReactDOM.render(<App />, document.querySelector('#app'));
+        // ReactDOM.render(<App />, document.querySelector('#app'));
     };
 
     /* Callback for handling the event 'RAINBOW_ONCONNECTIONSTATECHANGED' */
@@ -39,6 +34,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* Load the SDK */
     rainbowSDK.load();
-});
-
-
+})
