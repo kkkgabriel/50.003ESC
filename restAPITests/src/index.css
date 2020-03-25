@@ -13,8 +13,8 @@ code {
 }
 
 .data{
-	overflow: scroll;
-	height: 200px;
+	/*overflow: scroll;*/
+	height: 100px;
 }
 
 th {

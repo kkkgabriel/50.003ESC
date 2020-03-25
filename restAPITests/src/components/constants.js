@@ -6,4 +6,6 @@ export const RESULT_NA = "N.A";
 export const RESULT_FAILED = "Failed";
 export const RESULT_PASS = "Pass";
 
-export const URL = "www.potato.com";
+export const URL = "http://www.neobow.appspot.com";
+
+export const ERROR = "Error"

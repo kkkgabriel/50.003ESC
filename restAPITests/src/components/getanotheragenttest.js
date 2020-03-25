@@ -3,27 +3,27 @@ import * as api from './apiPaths';
 import * as c from './constants';
 import * as key from './keys';
 
-class TechRequestTest extends React.Component {
+class GetAnotherAgentTest extends React.Component {
 	constructor (props){
 		super(props);
 		this.validTags = [
-			"Lifestyle", 
-			"AccountsNBills",
-			"MobilePostpaid",
-			"MobilePrepaid",
-			"Broadband",
-			"TV",
-			"HomeLine",
-			"OnlinePurchase"
+			["Lifestyle", "Lifestyle@gmail.com"],
+			["AccountsNBills","AccountsNBills@gmail.com"],
+			["MobilePostpaid","MobilePostpaid@gmail.com"],
+			["MobilePrepaid","MobilePrepaid@gmail.com"],
+			["Broadband","Broadband@gmail.com"],
+			["TV","TV@gmail.com"],
+			["HomeLine", "HomeLine@gmail.com"],
+			["OnlinePurchase", "OnlinePurchase@gmail.com"]
 		];
 		this.invalidTags = [
-			"Potato",
-			"Tomato",
-			"Apple"
+			["Potato", "Potato@gmail.com"],
+			["Tomato", "Tomato@gmail.com"],
+			["Apple", "Apple@gmail.com"]
 		];
 		this.state = {
 			expected: "",
-			description: "Request Agent method",
+			description: "Get another agent",
 			progress: c.PROGRESS_NOT_DONE,
 			result: c.RESULT_NA,
 			testNotPassed: 0,
@@ -44,9 +44,10 @@ class TechRequestTest extends React.Component {
 		let invalidTags = this.invalidTags;
 		let i = 0;
 		while ( i < invalidTags.length ){
-			let tag = invalidTags[i];
-			let url = api.techrequest +"?"+key.TAG+"=" +tag;
-
+			let tag = invalidTags[i][0];
+			let email = invalidTags[i][1];
+			let url = api.getanotheragent +"?"+key.TAG+"=" +tag+"&"+key.TECHEMAIL+"="+email;
+			// console.log(url);
 			setTimeout(()=>{
 				fetch(url)
 					.then(res => res.json())
@@ -82,8 +83,9 @@ class TechRequestTest extends React.Component {
 		let validTags = this.validTags;
 		let i = 0;
 		while ( i < validTags.length ){
-			let tag = validTags[i];
-			let url = api.techrequest +"?"+key.TAG+"=" +tag;
+			let tag = validTags[i][0];
+			let email = validTags[i][1];
+			let url = api.getanotheragent +"?"+key.TAG+"=" +tag+"&"+key.TECHEMAIL+"="+email;
 
 			setTimeout(()=>{
 				fetch(url)
@@ -91,12 +93,18 @@ class TechRequestTest extends React.Component {
 					.then(
 						(result) => {
 							// console.log(result);
-							if ( result.length < 0 ){
-								let msg = "Failed: Result < 0.";
-								this.setState({
-									result: c.RESULT_FAILED,
-									errors: this.state.errors + msg
-								});
+							if ( result.length > 0 ){
+								let n = 0;
+								while ( n < result.length ){
+									if (result[n].email == email){
+										let msg = "Failed. Returned same tech email";
+										this.setState({
+											result: c.RESULT_FAILED,
+											errors: this.state.errors + msg
+										});
+									}
+									n++;
+								}
 							}
 							let testNotPassed = this.state.testNotPassed - 1;
 							this.setState({
@@ -124,12 +132,13 @@ class TechRequestTest extends React.Component {
 			testNotPassed: n
 		});
 
-		// This test ensures that with valid tags sent,
-		// the result is an array.
+		// This tests makes sure that with valid tags and valid 
+		// email, the email that we get back should not be the same as the
+		// one that we sent
 		this.validTagTest();
 
-		// This test ensures that with invalid tags sent,
-		// we do not get back any agent ids
+		// This test makes sure that with invalid tags,
+		// we should not get back any agent emails
 		this.invalidTagTest();
 	}
 
@@ -145,4 +154,4 @@ class TechRequestTest extends React.Component {
 	}
 }
 
-export default TechRequestTest;
+export default GetAnotherAgentTest;
