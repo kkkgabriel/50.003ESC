@@ -13,7 +13,7 @@ class PythonOrgSearch(unittest.TestCase):
         self.driver_agent = webdriver.Chrome()
         self.driver_user = webdriver.Chrome()
     def log_in_success(self):
-        self.driver_agent.get("http://127.0.0.1:3001")
+        self.driver_agent.get("http://127.0.0.1:3000")
         self.actions_agent = ActionChains(self.driver_agent)
         time.sleep(10)
         elem_username = self.driver_agent.find_element_by_name("email")
@@ -30,7 +30,7 @@ class PythonOrgSearch(unittest.TestCase):
         #initialising
         self.log_in_success()
         self.actions_user = ActionChains(self.driver_user)
-        self.driver_user.get("http://127.0.0.1:3000")
+        self.driver_user.get("http://127.0.0.1:4000")
         time.sleep(10)
         #establishing connection through start
         elem_accounts_and_bills = self.driver_user.find_element_by_xpath("//button[contains(text(),'Accounts and Bills')]")
@@ -50,7 +50,7 @@ class PythonOrgSearch(unittest.TestCase):
         self.actions_agent.click(elem_accept).perform()
         
     def test_login_success(self):
-        self.driver_agent.get("http://127.0.0.1:3001")
+        self.driver_agent.get("http://127.0.0.1:3000")
         self.actions_agent = ActionChains(self.driver_agent)
         time.sleep(10)
         elem_username = self.driver_agent.find_element_by_name("email")
@@ -62,7 +62,7 @@ class PythonOrgSearch(unittest.TestCase):
         elem_login = self.driver_agent.find_element_by_xpath("//input[@class='k-button k-primary']")
         self.actions_agent.click(elem_login).perform()
         time.sleep(10)
-        if self.driver_agent.current_url == "http://127.0.0.1:3001/home":
+        if self.driver_agent.current_url == "http://127.0.0.1:3000/home":
             print("pass test_login_success")
         else:
             print("failed test_login_success")
