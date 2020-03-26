@@ -121,8 +121,7 @@ class Conversations extends Component {
     }
 
 	updateRainbowMessages(){	// display messages from rainbow conversation onto the kendo chat element
-		let lastMessage = this.state.conversation.messages[this.state.conversation.messages.length-1];
-		// console.log(lastMessage.side);
+        let lastMessage = this.state.conversation.messages[this.state.conversation.messages.length-1];
 		if ( lastMessage.side == "L" ){	// for rainbow, incoming messages are displayed on the left
 			let theirResponse = {
 				author: this.state.conversation.contact.loginEmail,
@@ -209,7 +208,7 @@ class Conversations extends Component {
         return (
             <div>
                 {redirect}
-                <button className="k-button" onClick={this.toggleDialog}>Open Dialog</button>
+                <h1>Welcome</h1>
                 {this.state.visible && 
                 <Dialog title={"Please confirm"} onClose={this.toggleDialog}>
                     <p style={{ margin: "25px", textAlign: "center" }}>{this.bot["name"]} is trying to connect to you. Do you want to accept?</p>
@@ -227,7 +226,6 @@ class Conversations extends Component {
                     width={400}>
                 </Chat>
                 <button className="k-button" onClick={this.reroute}>Reroute </button>
-                <button className="k-button" onClick={this.updateIncomingMessage}> updateIncomingMessage</button>
                 </div>
             ): null}
             </div>
