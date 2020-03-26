@@ -36,6 +36,18 @@ const authSuccess = (state, action) => {
         error: null
     }
 }
+
+const authSignOut = (state, action) => {
+    return {
+        ...state,
+        email: null,
+        token: null,
+        userId: null,
+        displayName: null,
+        loading: false,
+        error: null
+    }
+}
 const reducer = (state = initialAuth, action) => {
     switch(action.type){
         case actionTypes.AUTH_FAIL:
@@ -44,6 +56,10 @@ const reducer = (state = initialAuth, action) => {
             return authStart(state, action)
         case actionTypes.AUTH_SUCCESS:
             return authSuccess(state, action)
+        case actionTypes.AUTH_SIGNOUT:
+            return authSignOut(state,action)
+        default:
+            break;
     }
     return state
 }

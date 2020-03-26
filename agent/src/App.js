@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {BrowserRouter, Switch, Route} from 'react-router-dom'
 import Login from './containers/Login/Login'
-import Conversation from './containers/Conversations/Conversations'
+import Home from './containers/Conversations/Home'
 
 class App extends Component{
     state = {
@@ -20,7 +20,7 @@ class App extends Component{
             {!this.state.loading ? 
             <Switch>
                 <Route path="/" exact component={Login}/>
-                <Route path="/home" exact component={Conversation}/>
+                <Route path="/home" exact component={Home}/>
             </Switch>: null}
         </BrowserRouter>
     );

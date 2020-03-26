@@ -48,8 +48,6 @@ class Conversations extends Component {
 
     componentDidMount(){
         var conversations = window.rainbowSDK.conversations.getAllConversations();
-        // console.log(conversations);
-
         this.setState({
             conversations: conversations
         }, function(){
@@ -62,7 +60,9 @@ class Conversations extends Component {
         })
     }
     conversationsChangedHandler(){
-        console.log("conversationsChangedHandler triggered");
+        console.log("conversationsChangedHandler triggered"); 
+        // console.log(this); 
+        console.log(this.state); 
         // console.log(this.state.conversations);
         var conversations = this.state.conversations;
 		if ( this.state.isAvailable ) {
@@ -120,29 +120,8 @@ class Conversations extends Component {
         }))
     }
 
-	updateRainbowMessages(){	// display messages from rainbow conversation onto the kendo chat element
-        let lastMessage = this.state.conversation.messages[this.state.conversation.messages.length-1];
-		if ( lastMessage.side == "L" ){	// for rainbow, incoming messages are displayed on the left
-			let theirResponse = {
-				author: this.state.conversation.contact.loginEmail,
-				text: this.state.conversation.lastMessageText,
-				timestamp: new Date()
-			}
-			this.setState((prevState) => ({
-				messages: [
-					...prevState.messages,
-					theirResponse
-				]
-			}))
-		}
-	}
-
-	changeBot(name){
-		this.bot.name = name;
-	}
-
-    findNewConversation(){
-		let conversations = this.state.conversations;
+    findNewConversation(conversations){
+        console.log(this.state.conversations)
         var i = 0;
         while (i < conversations.length ){
             try {
@@ -205,6 +184,7 @@ class Conversations extends Component {
                 <Redirect to="/"/>
             )
         }
+        console.log(this.state.conversations)
         return (
             <div>
                 {redirect}
