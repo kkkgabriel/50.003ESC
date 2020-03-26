@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Chat } from '@progress/kendo-react-conversational-ui';
 import { connect } from 'react-redux';
-import * as consts from './constants.js';
+import * as consts from './constants.js.js';
 import { Redirect } from 'react-router-dom'
 import { authFail, authSignOut } from '../../store/actions/auth.js';
 import DialogHome from '../../components/DialogHome/DialogHome'
@@ -39,11 +39,10 @@ class Home extends Component {
             );
         })
     }
-    conversationsChangedHandler = ()=>{
+    conversationsChangedHandler = (event)=>{
         // why the state changed without any setState??
         console.log("conversationsChangedHandler triggered");
-        console.log(this.state.conversations)
-        // console.log(this.state.conversations);
+        console.log(event.detail)
 		if ( this.state.isAvailable ) {
 			this.updateRainbowMessages();
 		} else {
