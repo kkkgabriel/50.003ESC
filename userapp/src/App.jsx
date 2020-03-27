@@ -4,6 +4,7 @@ import "@progress/kendo-theme-default/dist/all.css";
 import { Chat } from '@progress/kendo-react-conversational-ui';
 import axios from 'axios';
 
+const dialogFlowBaseUrl = "http://localhost:3005"
 export default class App extends React.Component {
     constructor(props) {
         super(props);
@@ -16,7 +17,7 @@ export default class App extends React.Component {
 			name: "bot" 
 		};
         axios.post(
-			`http://localhost:3000`,
+			dialogFlowBaseUrl,
 			{"author":this.bot,
 			"timestamp":new Date(),
 			"text":"hello"})
@@ -59,7 +60,7 @@ export default class App extends React.Component {
 
 	addBotMessage= (message ) => {
 		let newMessage = Object.assign({}, message);
-		axios.post(`http://localhost:3000`,newMessage)
+		axios.post(dialogFlowBaseUrl,newMessage)
 		.then(res=>{
 		newMessage.text = res['data'];
 		newMessage.author = this.bot;

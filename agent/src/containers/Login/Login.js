@@ -3,7 +3,7 @@ import {withRouter} from 'react-router-dom'
 import '@progress/kendo-theme-bootstrap/dist/all.css'
 // import axios from 'axios'
 import classes from './Login.module.css'
-import { authSuccess, authStart, authFail } from '../../store/actions/auth';
+import { authSuccess, authStart, authFail, authSignOut } from '../../store/actions/auth';
 import { connect } from 'react-redux';
 import LoginForm from '../../components/LoginForm/LoginForm';
 
@@ -14,12 +14,23 @@ class Login extends Component{
     }
 
     componentDidMount(){
-        console.log(window.rainbowSDK)
+        if (typeof window.rainbowSDK === 'undefined'){
+            return
+        }
+        else {
+            window.rainbowSDK.connection.signout()
+            .then(() => {
+                this.props.onLogout()
+            })
+        }
     }
     loginHandler = (event) => {
         event.preventDefault()
         // var rainbowLogin = "mario.kosasih@gmail.com"
         // var rainbowPassword = "6OCJc97dWp*2"
+        if (typeof window.rainbowSDK === 'undefined'){
+            return
+        }
         this.props.authStart()
         window.rainbowSDK.connection.signin(this.state.email, this.state.password)
             .then(account => {
@@ -65,7 +76,8 @@ const mapDispatchToProps = dispatch => {
     return{
         authStart: () => dispatch(authStart()),
         authFail: (error) => dispatch(authFail(error)),
-        authSuccess: (email, userId, displayName, token) => dispatch(authSuccess(email, userId, displayName, token))
+        authSuccess: (email, userId, displayName, token) => dispatch(authSuccess(email, userId, displayName, token)),
+        onLogout: () => dispatch(authSignOut())
     }
 }
 
