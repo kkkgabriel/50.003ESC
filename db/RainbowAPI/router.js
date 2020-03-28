@@ -1,5 +1,5 @@
 const express = require('express')
-const api = require('./createAnonymousAcc')
+const api = require('./api')
 var router = express.Router()
 
 router.get('/getAnonymous', api.getRainbowAnonymousGuest)

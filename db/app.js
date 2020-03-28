@@ -16,7 +16,7 @@ const connection = require('./database');
 const rainbowSDK = require('./RainbowAPI/config/rainbowSDK')
 
 const rainbowRouter = require('./RainbowAPI/router')
-const dbRouter = require('./router/dbRouter')
+const dbRouter = require('./db/dbRouter')
 
 app.use(bodyParser.urlencoded({ extended: true }))
 rainbowSDK.start()
