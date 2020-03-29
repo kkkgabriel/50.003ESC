@@ -4,6 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
+    "start": "node main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -14,8 +15,7 @@
     "cors": "^2.8.5",
     "ejs": "^3.0.1",
     "express": "^4.17.1",
-    "n": "^6.4.0",
     "nodemon": "^2.0.2",
-    "rainbow-web-sdk": "^1.67.0"
+    "rainbow-web-sdk": "^1.68.0"
   }
 }

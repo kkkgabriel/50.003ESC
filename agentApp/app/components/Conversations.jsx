@@ -57,6 +57,7 @@ class Conversations extends Component {
         // console.log(this.state.conversations);
 
         var conversations = this.state.conversations;
+        console.log("conversations")
         var conversation = this.findNewConversation(conversations);
 
         this.setState({
@@ -110,6 +111,7 @@ class Conversations extends Component {
     }
 
     findNewConversation(conversations){
+        console.log(conversations)
         var i = 0;
         while (i < conversations.length ){
             var l = conversations[i].messages.length;

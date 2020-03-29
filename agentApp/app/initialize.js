@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* Bootstrap the SDK */
     angular.bootstrap(document, ["sdk"]).get("rainbowSDK");
-
+    console.log(angular)
     /* Callback for handling the event 'RAINBOW_ONREADY' */
     var onReady = function onReady() {
         console.log("[DEMO] :: On SDK Ready !");
