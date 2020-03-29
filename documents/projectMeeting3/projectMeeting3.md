@@ -48,9 +48,14 @@ We will stick with simple testing of main functionality which ensures that compl
   Test agent Dashboard( Idle time ) | Agent idles in website for a minute | Add 1 minute to idle time on dashboard
   Test chat features | Agent send message to caller | Caller receives a message from agent
   Test chat features | Caller sends message to Agent | Agents receives a message from caller
-  test chat features | Agent opens char history | Previous messages available in history
-  Test ability to rejects call | Caller maakes a call, agent rejects it | Rejection accepted, caller is still on queue
-  test ability to accept calls | Caller makes a call, Agent accepts it | Connection success
+  Test chat features | Agent opens char history | Previous messages available in history
+  Test rerouting ability of agent | Agent clicks a button to reroute user to another agent, message sent by agent to user | User receives message from new agent
+  Test agent no longer connected to user after rerouting | Agent A clicks a button to reroute user to agent B, Agent A then sends a message to user | User cannot receive message from agent A
+  Test agent able to end conversation | Agent clicks a button to end conversation with user | diconnected conversation message pops up
+  Test disconnected converstation | Agent sends message to user | User cannot receive the message
+
+  
+  
   
   
   __User Interface__
@@ -58,12 +63,11 @@ We will stick with simple testing of main functionality which ensures that compl
   ------|-------|--------
   Test for login | Caller enters a username | login success
   Test for login | Caller enters no username | login failure
-  Test for multiple login | Agent logged in from 2 different devices | login success
-  Test ability to request call | Caller makes a call to agent | Caller put on queue or Agent answers right away
+  Test Routing completed successfully to correct agent | Caller selects a tag | Routed to correct
   Test chat features | Caller sends message to agent | Agent receives message from caller
   Test chat features | Agent sends message to caller | Caller receives message from agent
-  Test ability to make calls | Caller presses on the call button | Notify caller that a call has been made
-  Test ability to select tagas | Caller select tags before making call | Agent assigned should be relevant to user's tags
+  Test if messages are sent from redirected user to new agent | User redirected to another agent and sends a messsage | Agent able to receive message from redirected user
+  Test if user has been properly diconnected from agent | User sends message to agent | No message is registered due to successful disconnection
   Test NLP system | Caller types a sentemce | Keyword that is relevant to our available tags.
   
 
