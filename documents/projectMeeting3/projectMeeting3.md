@@ -10,12 +10,12 @@ that shows a simulation of our routing engine.
 __Formal documentation of Use case__
 ![useCaseDiagram](useCaseDiagram.png)
 
-__Class diagram__
-__User App__
+__Class diagram__<br>
+__User App__<br>
 ![User App Class Diagram](userAppClassDiagram.png)
-__Agent App__
+__Agent App__<br>
 ![Agent App Class Diagram](agentAppClassDiagram.png)
-__Routing Engine__
+__Routing Engine__<br>
 ![Routing Engine Class Diagram](routingEngineClassDiagram.png)
 
 __Sequence diagram__
