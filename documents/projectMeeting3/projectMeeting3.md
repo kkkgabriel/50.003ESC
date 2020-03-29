@@ -11,8 +11,11 @@ __Formal documentation of Use case__
 ![useCaseDiagram](useCaseDiagram.png)
 
 __Class diagram__
+__User App__
 ![User App Class Diagram](userAppClassDiagram.png)
+__Agent App__
 ![Agent App Class Diagram](agentAppClassDiagram.png)
+__Routing Engine__
 ![Routing Engine Class Diagram](routingEngineClassDiagram.png)
 
 __Sequence diagram__
