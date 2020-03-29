@@ -1,4 +1,4 @@
-For a full view of this .md document, go to https://github.com/kkkgabriel/50.003ESC/blob/master/documents/projectMeeting3/projectMeeting3.md<br>
+For a full view of this .md document, go to https://github.com/kkkgabriel/50.003ESC/blob/master/documents/projectMeeting3/projectMeeting3.md<br><br>
 __Changes in requirement__<br>
 We are staying with the same requirements as documented in project meeting 1:
 
@@ -11,11 +11,11 @@ __Formal documentation of Use case__
 ![useCaseDiagram](useCaseDiagram.png)
 
 __Class diagram__<br>
-__User App__<br>
+__1. User App__<br>
 ![User App Class Diagram](userAppClassDiagram.png)
-__Agent App__<br>
+__2. Agent App__<br>
 ![Agent App Class Diagram](agentAppClassDiagram.png)
-__Routing Engine__<br>
+__3. Routing Engine__<br>
 ![Routing Engine Class Diagram](routingEngineClassDiagram.png)
 
 __Sequence diagram__
