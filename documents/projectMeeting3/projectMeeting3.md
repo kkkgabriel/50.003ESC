@@ -86,10 +86,5 @@ __2. Non- functional Testing__
   tools you can use is up to you.
   selemium for web app, can use all the time
 
-__Workload distribution__
-Gabriel Pang - Research on DialogFlow API, KentoUI interface
-Ryan Sacatani - Documentation of black box testing
-Tey Shi Ying - Documentation of Class Diagram and database configuration
-Mario Josephan - Documentation of use case diagram and research on Rainbow API
-Gabriel Koh - Documentation of sequence diagram and research on Rainbow API
-For more details, refer to commit history on https://github.com/kkkgabriel/50.003ESC
+__Workload distribution__<br>
+Refer to commit history on https://github.com/kkkgabriel/50.003ESC
