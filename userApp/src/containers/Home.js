@@ -24,14 +24,6 @@ class Home extends React.Component{
             id: "2",
             name: "agent"
         }
-        axios.post(
-			dialogFlowBaseUrl,
-			{"author":this.bot,
-			"timestamp":new Date(),
-			"text":"hello"})
-                .then(res=>{
-                    console.log(res["data"]);
-                })
         this.state = {
             messages: [
                 {

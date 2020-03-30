@@ -2,14 +2,11 @@ import React from 'react';
 import './App.css';
 import "@progress/kendo-theme-default/dist/all.css";
 import { Chat } from '@progress/kendo-react-conversational-ui';
-<<<<<<< HEAD
 import Home from './containers/Home';
-=======
 import { Button} from '@progress/kendo-react-buttons'
->>>>>>> diagonold
 import axios from 'axios';
 
-const dialogFlowBaseUrl = "http://localhost:3000"
+const dialogFlowBaseUrl = "http://localhost:3005"
 export default class App extends React.Component {
     constructor(props) {
         super(props);
@@ -21,14 +18,6 @@ export default class App extends React.Component {
 			id: "0", 
 			name: "bot" 
 		}
-        axios.post(
-			dialogFlowBaseUrl,
-			{"author":this.bot,
-			"timestamp":new Date(),
-			"text":"hello"})
-        	.then(res=>{
-            	console.log(res["data"]);
-        	})
         this.state = {
             //"version": rainbowSDK.version(),
             messages: [
@@ -211,20 +200,11 @@ export default class App extends React.Component {
 		});
 	}
 
-	
-
 
     render() {       
         return (
             <div>
-                <h1>Conversational UI</h1>
-                <Chat user={this.user}
-                    messages={this.state.messages}
-                    onMessageSend={this.addNewMessage}
-                    placeholder={"Type a message..."}
-                    width={400}>
-               </Chat>
-			   <Button onClick={this.endCall}>End Chat</Button>
+                <Home />
             </div>
         );
     }
