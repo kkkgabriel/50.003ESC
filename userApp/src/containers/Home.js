@@ -2,6 +2,7 @@ import React from 'react';
 import '../App.css';
 import "@progress/kendo-theme-default/dist/all.css";
 import { Chat } from '@progress/kendo-react-conversational-ui';
+import { Button} from '@progress/kendo-react-buttons'
 import axios from 'axios';
 
 const dialogFlowBaseUrl = "http://localhost:3005"
@@ -24,6 +25,16 @@ class Home extends React.Component{
             id: "2",
             name: "agent"
         }
+        axios.post(
+			dialogFlowBaseUrl,
+			{
+                "author":this.bot,
+    			"timestamp":new Date(),
+    			"text":"hello"
+            })
+            .then(res=>{
+                console.log(res["data"]);
+            })
         this.state = {
             messages: [
                 {
@@ -33,7 +44,13 @@ class Home extends React.Component{
                 }
             ],
             conversation: '',
-            contact: ''
+            contact: '',
+            
+            
+            rainbowOnline: false,
+
+            // Change state when user is waiting, 
+            userWaiting: false
 		};
 		// This allows us to have event hadnler that handles this
 		this.addNewMessage = this.addNewMessage.bind(this);
@@ -43,6 +60,14 @@ class Home extends React.Component{
         this.login();
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        // Listen for change in userWaiting state
+        if ( prevState.userWaiting !== this.state.userWaiting ){
+
+            // enable/disable the text input whereever necessary
+            this.disableTextInput(this.state.userWaiting);
+        }
+    }
     addNewMessage = (event) => {
 		let value = this.parseText(event);
 		
@@ -123,8 +148,10 @@ class Home extends React.Component{
                     id: Date.now().toString()
                 };
 
-                // disable text input until connection with agent is established
-                this.disableTextInput(true);
+                // set userWaiting to true to disable text input until connection with agent is established
+                this.setState({
+                    userWaiting: true
+                })
 
                 // Add REST API call here to get the available agent ID
                 let agentId = "5e600991d8084c29e64eb436"; // Mobile postpaid
@@ -161,7 +188,6 @@ class Home extends React.Component{
     }
 
     login = () => {
-
         // Add REST API call here to replace the hardcoded username and pw
         var rainbowLogin = "user1@singco.com";
         var rainbowPassword = "Longpassword!1";
@@ -180,6 +206,29 @@ class Home extends React.Component{
                 console.log("failed to login")
                 console.log(err);
             })
+    }
+
+    
+    // reroute to rainbow agent
+    reroute = () => {
+        // if reroute successful, userWaiting to false
+        this.setState({
+            userWaiting: true,
+            rainbowOnline: true
+        });
+    }
+    
+    // Ends the call with rainbow Agent
+    endCall = ()=>{
+        // The bot should be the one ending the message
+        this.bot = { name: "bot", id: Date.now().toString() }
+        let newMessage = Object.assign({});
+        newMessage.author = this.bot
+        newMessage.text = "Chat Session ended"
+        console.log("rainbowOnline" + this.state.rainbowOnline)
+        this.setState({
+            messages :[...this.state.messages,newMessage]
+        });
     }
 
     openConversationWithAgentId = (strId) =>{
@@ -223,15 +272,16 @@ class Home extends React.Component{
 
     }
 
+    sendKeyword = (keyword) => {
+        window.rainbowSDK.im.sendMessageToConversation(this.state.conversation, keyword);
+    }
+
+
     addConversationListener = () => {
         document.addEventListener(
             window.rainbowSDK.conversations.RAINBOW_ONCONVERSATIONCHANGED,
             this.conversationChangedHandler
         );
-    }
-
-    sendKeyword = (keyword) => {
-        window.rainbowSDK.im.sendMessageToConversation(this.state.conversation, keyword);
     }
 
 
@@ -243,8 +293,10 @@ class Home extends React.Component{
         // special case "accept" keyword
         if ( lastMessage == ACCEPT_KEYWORD ){
 
-            // enabling the text input
-            this.disableTextInput(false);
+            // set userWaiting to false to disable input
+            this.setState({
+                userWaiting: false
+            })
         }
 
         // create message that is suitable for kendo chat to display
@@ -260,10 +312,6 @@ class Home extends React.Component{
         document.getElementsByClassName('k-input')[0].disabled = bool;
     }
 
-    reroute = () => {
-
-    }
-
     render() {       
         return (
             <div>
@@ -275,6 +323,7 @@ class Home extends React.Component{
                     placeholder={"Type a message..."}
                     width={400}>
                 </Chat>
+               <Button onClick={this.endCall}>End Chat</Button>
             </div>
         );
     }
