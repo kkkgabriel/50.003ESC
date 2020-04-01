@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {BrowserRouter, Switch, Route} from 'react-router-dom'
 import Login from './containers/Login/Login'
-import Home from './containers/Conversations/Home'
+import Home from './containers/Home/Home'
 
 class App extends Component{
     state = {
