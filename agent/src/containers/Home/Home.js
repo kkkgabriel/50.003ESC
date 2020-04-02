@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
 import { Chat } from '@progress/kendo-react-conversational-ui';
 import { connect } from 'react-redux';
-import * as consts from './constants.js.js';
+import * as consts from './constants.js';
 import { Redirect } from 'react-router-dom'
 import { authFail, authSignOut } from '../../store/actions/auth.js';
 import DialogHome from '../../components/DialogHome/DialogHome'
+import Header from '../../components/Header/Header.js';
 class Home extends Component {
 
     constructor (props) {
@@ -37,6 +38,14 @@ class Home extends Component {
                 window.rainbowSDK.conversations.RAINBOW_ONCONVERSATIONSCHANGED,
                 this.conversationsChangedHandler
             );
+        })
+    }
+    componentWillUnmount() {
+        window.rainbowSDK.connection.signout()
+        .then(() => {
+            console.log("Logout")
+            // dispatch
+            this.props.onLogout()
         })
     }
     conversationsChangedHandler = (event)=>{
@@ -174,6 +183,7 @@ class Home extends Component {
         return (
             <div>
                 {redirect}
+                <Header displayName={this.props.account.displayName} logout={this.logoutHandler}/>
                 {/*<button className="k-button" onClick={this.toggleDialog}>Open Dialog</button>*/}
                 {this.state.isAvailable ? null:<div style={{textAlign:"center", margin:"2rem 0", width: "100%"}}>WAITING</div>}
                 {this.state.visible && 
@@ -193,7 +203,6 @@ class Home extends Component {
                         <button className="k-button" onClick={this.reroute}>Reroute </button>
                     </div>
                 }
-            <button onClick={this.logoutHandler}>Logout</button>
             </div>
         );
     }
