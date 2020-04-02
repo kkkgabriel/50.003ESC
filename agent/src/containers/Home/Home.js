@@ -128,7 +128,8 @@ class Home extends Component {
 					theirResponse
 				]
 			}))
-		}
+        }
+        this.userEndCall()
 	}
 
     updateConversation = (convoId) =>{
@@ -182,6 +183,19 @@ class Home extends Component {
             this.props.onLogout()
             this.props.history.push('/')
         })
+    }
+
+    userEndCall = () => {
+        let lastMessage = this.state.conversation.messages[this.state.conversation.messages.length-1];
+        // console.log(lastMessage);
+        // console.log(lastMessage.data);
+		if ( lastMessage.data == consts.USER_END_PASSWORD ){	
+        // check if conversation has the userend keyword sent by user
+            console.log("calling userendcall")
+            this.done()
+        }
+
+        //rest api to update availability of agent in db
     }
 
 
