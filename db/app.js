@@ -17,7 +17,7 @@ const rainbowSDK = require('./RainbowAPI/config/rainbowSDK')
 
 const rainbowRouter = require('./RainbowAPI/router')
 const dbRouter = require('./db/dbRouter')
-
+const queueRouter = require('./db/queue/queueRouter')
 app.use(bodyParser.urlencoded({ extended: true }))
 rainbowSDK.start()
 .then(() => {
@@ -26,5 +26,6 @@ rainbowSDK.start()
 app.get('/status', (req, res) => res.send('Working!'));
 app.use(dbRouter)
 app.use(rainbowRouter)
+app.use(queueRouter)
 // Port 8080 for Google App Engine
 app.listen(process.env.PORT || 3000);
