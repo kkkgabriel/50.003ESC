@@ -22,6 +22,7 @@ class Home extends Component {
             conversation: {},
             visible:false,
             isAvailable:false,
+            reroute:false,
             messages: []
 
         }
@@ -61,11 +62,21 @@ class Home extends Component {
 
     reroute = () => {
         // insert rest API here
+        console.log("rerouting")
+
+        // send popup for agent to choose which type of tags should agents be rerouted to
+        if (!this.state.reroute){
+            window.rainbowSDK.im.sendMessageToConversation(this.state.conversation, consts.REROUTE_KEYWORD);
+        }
+        this.setState({
+            reroute: !this.state.reroute,
+        })
 
         // close convo
         this.done()
         // send signal that you are available to the server
         // reroute to agent who is not him
+        
     }
 
 
@@ -93,6 +104,7 @@ class Home extends Component {
 
         // insert rest API here
     }
+   
 
     addNewMessage = (event)=>{
         let myResponse = Object.assign({}, event.message);
@@ -197,6 +209,12 @@ class Home extends Component {
 
         //rest api to update availability of agent in db
     }
+    reroutetag = (element) => {
+        console.log("reroutetag")
+        console.log(element.text)
+        //map index of element.text to api calls
+
+    }
 
 
     endCall = () =>{
@@ -237,8 +255,26 @@ class Home extends Component {
                             placeholder={"Type a message..."}
                             width={800}>
                         </Chat>
-                        <button className="k-button" onClick={this.reroute}>Reroute </button>
-                        <button className="k-button" onClick={this.endCall}>End Call </button>
+                        <span style={{justifyContent:"center"}}>
+                            <button className="k-button" onClick={this.reroute}>Reroute </button>
+                            <button className="k-button" onClick={this.endCall}>End Call </button>
+                        </span>
+                    </div>
+                }
+                {this.state.reroute &&
+                    <div>
+                        {/* <h> client reroute: choose agent tag </h> */}
+                        <br></br>
+                        <span style={{justifyContent:"center"}}>
+                            <button className="k-button" onClick={this.reroutetag(this)}>AccountNBills </button>
+                            <button className="k-button" onClick={this.reroutetag(this)}>MobilePostpaid </button>
+                            <button className="k-button" onClick={this.reroutetag(this)}>MobilePrepaid </button>
+                            <button className="k-button" onClick={this.reroutetag(this)}>Broadband </button>
+                            <button className="k-button" onClick={this.reroutetag(this)}>TV </button>
+                            <button className="k-button" onClick={this.reroutetag(this)}>HomeLine </button>
+                            <button className="k-button" onClick={this.reroutetag(this)}>OnlinePurchase </button>
+                            <button className="k-button" onClick={this.reroutetag(this)}>Lifestyle</button>
+                        </span>
                     </div>
                 }
             <button onClick={this.logoutHandler}>Logout</button>
