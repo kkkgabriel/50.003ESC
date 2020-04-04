@@ -14,13 +14,10 @@ const app = express();
 const bodyParser = require('body-parser');
 const connection = require('./database');
 
-let n = 0;
 const rainbowSDK = require('./RainbowAPI/config/rainbowSDK')
 rainbowSDK.start()
 .then(() => {
     console.log("rainbowSDK successfully started")
-    console.log("this is n: "+ n)
-    n += 1;
 })
 
 
@@ -261,6 +258,8 @@ app.route('/techrequest')
 });
 
 
+// const api = require('./api')
+// app.get('/getAnonymous', api.getRainbowAnonymousGuest)
 app.route('/getAnonymous')
 .get((req, res, next)=>{
 	let status = {
