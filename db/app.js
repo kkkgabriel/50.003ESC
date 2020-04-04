@@ -24,7 +24,7 @@ rainbowSDK.start()
     console.log("rainbowSDK successfully started")
 })
 app.get('/status', (req, res) => res.send('Working!'));
-app.use(dbRouter)
 app.use(rainbowRouter)
+app.use(dbRouter)
 // Port 8080 for Google App Engine
 app.listen(process.env.PORT || 3000);
