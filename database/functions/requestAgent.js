@@ -2,7 +2,7 @@ const axios = require('axios');
 var async = require('async');
 const express = require('express');
 var router = express.Router();
-const connection = require('./database');
+const connection = require('../database');
 
 var tasksList = ["AccountsNBills","MobilePostpaid","MobilePrepaid","Broadband","TV","HomeLine","OnlinePurchase","Lifestyle"];
 
@@ -29,7 +29,7 @@ async function loop(tag,callback){
         console.log(response.data.success);
         if (response.data.success == true){
             complete = true;
-        }
+        } 
     }
     callback(null,response.data)
 }
