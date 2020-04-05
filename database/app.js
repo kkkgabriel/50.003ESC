@@ -14,11 +14,16 @@ const app = express();
 const bodyParser = require('body-parser');
 const connection = require('./database');
 
-const rainbowSDK = require('./RainbowAPI/config/rainbowSDK')
-rainbowSDK.start()
-.then(() => {
-    console.log("rainbowSDK successfully started")
-})
+const queue = require('./queue');
+
+// const rainbowSDK = require('./RainbowAPI/config/rainbowSDK')
+// rainbowSDK.start()
+// .then(() => {
+//     console.log("rainbowSDK successfully started")
+// })
+
+
+app.use('/', queue);
 
 
 /************************* agent methods ***************************
@@ -26,6 +31,7 @@ rainbowSDK.start()
 /endagentcall
 /agentsignout
 ********************************************************************/
+
 
 /*verification of agent password by comparing password from database to its respective username*/
 app.route('/agentlogin')
@@ -221,9 +227,10 @@ app.route('/techrequest')
 			let success = true;
 			let errorMsg = "";
 			let errorId = 0;
+			let rainbowid = "";
 			
 			if (results.length == 1){
-				let rainbowid = results[0].rainbowid;
+				rainbowid = results[0].rainbowid;
 				connection.query(
 					"UPDATE techentries SET `status`='not available' where `rainbowid`=?", rainbowid,
 
@@ -238,7 +245,7 @@ app.route('/techrequest')
 								errorMsg = "Agent not available";
 								errorId = 1;
 							} else {
-								res.json({agentId: rainbowid, success:success, errorId: errorId, errorMsg: errorMsg});
+								// res.json({agentId: rainbowid, success:success, errorId: errorId, errorMsg: errorMsg});
 							}
 						} else {
 							success = false;
@@ -252,38 +259,36 @@ app.route('/techrequest')
 				errorMsg = "No available agent at the moment";
 				errorId = 3;
 			}
-			res.json({success:success, errorId: errorId, errorMsg: errorMsg});
+			res.json({agentId: rainbowid, success:success, errorId: errorId, errorMsg: errorMsg});
 		}
 	);
 });
 
 
-// const api = require('./api')
-// app.get('/getAnonymous', api.getRainbowAnonymousGuest)
-app.route('/getAnonymous')
-.get((req, res, next)=>{
-	let status = {
-		success: true,
-		error: {
-			errorId: 0,
-			errorMsg: ""
-		}
-	}
-	const ttl = 3600;
-	rainbowSDK.admin.createAnonymousGuestUser(ttl)
-	.then((guest)=>{
-		res.json({
-			status: status,
-            loginEmail: guest.loginEmail,
-            password: guest.password
-		});
-	})
-	.catch((err)=>{
-		status.error.errorId = 1;
-		status.error.errorMsg = "Unable to create user";
-		res.json({status});
-	});
-});
+// app.route('/getAnonymous')
+// .get((req, res, next)=>{
+// 	let status = {
+// 		success: true,
+// 		error: {
+// 			errorId: 0,
+// 			errorMsg: ""
+// 		}
+// 	}
+// 	const ttl = 3600;
+// 	rainbowSDK.admin.createAnonymousGuestUser(ttl)
+// 	.then((guest)=>{
+// 		res.json({
+// 			status: status,
+//             loginEmail: guest.loginEmail,
+//             password: guest.password
+// 		});
+// 	})
+// 	.catch((err)=>{
+// 		status.error.errorId = 1;
+// 		status.error.errorMsg = "Unable to create user";
+// 		res.json({status});
+// 	});
+// });
 
 
 app.get('/status', (req, res) => res.send('noice!'));
