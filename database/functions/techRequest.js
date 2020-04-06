@@ -6,9 +6,10 @@ router.get(
 	'/techrequest',
 	function(req, res, next) {
 		let tag = req.query.tag;
+		let notemail = req.query.notemail;
 
 		connection.query(
-			"SELECT rainbowid from techentries INNER JOIN techagententries ON techentries.`techid` = techagententries.`techid` INNER JOIN tagentries ON techagententries.`tagid` = tagentries.`tagid` WHERE tagentries.`tagname` = ? and techentries.`status`='available' and techentries.`loggedin`=1 LIMIT 1", tag,
+			"SELECT rainbowid from techentries INNER JOIN techagententries ON techentries.`techid` = techagententries.`techid` INNER JOIN tagentries ON techagententries.`tagid` = tagentries.`tagid` WHERE tagentries.`tagname` = ? and techentries.`status`='available' and techentries.`loggedin`=1 and techentries.`email` != ?LIMIT 1", [tag, notemail],
 			function(error, results, fields) {
 
 				if (error) throw error;

@@ -38,12 +38,12 @@ app.use('/', agentSignOut);
 *******************************************************************/
 
 const techRequest = require('./functions/techRequest');
-const getAnonymous = require('./functions/getAnonymous');
+// const getAnonymous = require('./functions/getAnonymous');
 const requestAgent = require('./functions/requestAgent');
 
 app.use('/', techRequest);
 app.use('/', requestAgent);
-app.use('/', getAnonymous);
+// app.use('/', getAnonymous);
 
 
 app.get('/status', (req, res) => res.send('noice!'));

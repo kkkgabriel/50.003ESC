@@ -14,7 +14,7 @@ function isEmpty(obj) {
     return true;
 }
 
-async function loop(tag,callback){
+async function loop(tag, notemail,callback){
     console.log('Performing task for ' + tag);
     var complete = false;
     /* think busy waiting maybe quite a stupid method, but since this is a asynchronous queue why not?
@@ -22,7 +22,8 @@ async function loop(tag,callback){
     while(!complete){
         var response = await axios.get("https://neobow.appspot.com/techrequest",{
             params:{
-                tag:tag
+                tag:tag,
+                notemail: notemail
             }
         })
         console.log(response.data)
@@ -79,28 +80,28 @@ var q = async.queue(function(task, callback) {
 }, tasksList.length);
 
 var AccountsNBillsq = async.queue(function(task,callback){
-    loop("AccountsNBills",callback);
+    loop("AccountsNBills", task.notemail, callback);
 },1);
 var MobilePostpaidq = async.queue(function(task,callback){
-    loop("MobilePostpaid",callback);
+    loop("MobilePostpaid", task.notemail,callback);
 },1);
 var MobilePrepaidq = async.queue(function(task,callback){
-    loop("MobilePrepaid",callback);
+    loop("MobilePrepaid", task.notemail,callback);
 },1);
 var Broadbandq = async.queue(function(task,callback){
-    loop("Broadband",callback);
+    loop("Broadband", task.notemail,callback);
 },1);
 var singtelTVq = async.queue(function(task,callback){
-    loop("TV",callback);
+    loop("TV", task.notemail,callback);
 },1);
 var HomeLineq = async.queue(function(task,callback){
-    loop("HomeLine",callback);
+    loop("HomeLine", task.notemail,callback);
 },1);
 var OnlinePurchaseq = async.queue(function(task,callback){
-    loop("OnlinePurchase",callback);
+    loop("OnlinePurchase", task.notemail,callback);
 },1);
 var Lifestyleq = async.queue(function(task,callback){
-    loop("Lifestyle",callback);
+    loop("Lifestyle", task.notemail,callback);
 },1);
 
 
@@ -139,8 +140,12 @@ Lifestyleq.error(function(err,task){
 //get request to add user to relevant queue.
 router.get('/requestAgent',(req,res)=>{
     tag = req.query.tag;
+    notemail = "";
+    if (req.query.notemail != null){
+        notemail = req.query.notemail;        
+    }
     var tagq = eval(tag+"q");
-    tagq.push({name:req.query.name}, function(err,resp){
+    tagq.push({name:req.query.name, notemail: notemail}, function(err,resp){
         res.json(resp);
     })
 })
