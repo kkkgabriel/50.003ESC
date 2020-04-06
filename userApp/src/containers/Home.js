@@ -4,12 +4,13 @@ import "@progress/kendo-theme-default/dist/all.css";
 import { Chat } from '@progress/kendo-react-conversational-ui';
 import { Button} from '@progress/kendo-react-buttons'
 import axios from 'axios';
+import * as api from '../constants/api.js';
+import * as keys from '../constants/keywords.js';
 
-const dialogFlowBaseUrl = "http://localhost:3005"
-const START_KEYWORD = "start"
-const ACCEPT_KEYWORD = "accept"
+const dialogFlowBaseUrl = "http://localhost:3005";
 
-class Home extends React.Component{
+class Home extends React.Component {
+
     constructor(props) {
         super(props);
         this.user = {
@@ -45,8 +46,9 @@ class Home extends React.Component{
             ],
             conversation: '',
             contact: '',
-            
-            
+            tag: '',
+
+            // Change this to true once done talking to bot
             rainbowOnline: false,
 
             // Change state when user is waiting, 
@@ -56,6 +58,8 @@ class Home extends React.Component{
 		this.addNewMessage = this.addNewMessage.bind(this);
 	}
 
+
+    /******************************* Lifecycle methods **********************************/
     componentDidMount(){
         this.login();
     }
@@ -68,10 +72,16 @@ class Home extends React.Component{
             this.disableTextInput(this.state.userWaiting);
         }
     }
+
+    /******************************* methods to add newmessages **********************************/
     addNewMessage = (event) => {
 		let value = this.parseText(event);
 		
         if (!event.value) {
+            // console.log("this is event value: "+value)
+            if (!this.state.rainbowOnline){
+                this.checkForTag(value);
+            }
             this.setState((prevState) => {
                 return { messages: [ ...prevState.messages, { author: this.user, text: value, timestamp: new Date() } ] };
             });
@@ -86,11 +96,10 @@ class Home extends React.Component{
 		}
 	};
 	
-
-	addBotMessage= (message ) => {
-		let newMessage = Object.assign({}, message);
-		axios.post(dialogFlowBaseUrl,newMessage)
-		.then(res=>{
+    addBotMessage= (message ) => {
+        let newMessage = Object.assign({}, message);
+        axios.post(dialogFlowBaseUrl,newMessage)
+        .then(res=>{
             newMessage.text = res['data'];
             newMessage.author = this.bot;
             var messagecheck = newMessage.text.split(" ");
@@ -126,6 +135,10 @@ class Home extends React.Component{
                         type: "reply",
                         value: "Singtel TV"
                     },
+                    {
+                        type: "reply",
+                        value: "Lifestyle"
+                    }
             
                 ];
             }
@@ -153,31 +166,106 @@ class Home extends React.Component{
                     userWaiting: true
                 })
 
-                // Add REST API call here to get the available agent ID
-                let agentId = "5e600991d8084c29e64eb436"; // Mobile postpaid
-
-                // establish connection
-                this.openConversationWithAgentId(agentId);
-
+                // get agent
+                this.getAgent();
             }
+
             this.setState({
                 messages: [...this.state.messages, newMessage]
             });
-		})	
-	}
+        })  
+    }
 
-	addRainbowMessage = (message) =>{
-		window.rainbowSDK.im.sendMessageToConversation(this.state.conversation, message.text);
-		let newMessage = Object.assign({}, message);
-		newMessage.author = this.user
-		newMessage.text = message.text;
-		this.setState({
+    addRainbowMessage = (message) =>{
+        window.rainbowSDK.im.sendMessageToConversation(this.state.conversation, message.text);
+        let newMessage = Object.assign({}, message);
+        newMessage.author = this.user
+        newMessage.text = message.text;
+        this.setState({
             messages: [...this.state.messages, newMessage]
-		});
-	
-	  }
+        });
+    
+    }
 
-	parseText = ( event ) => {
+    /******************************* methods to receive new messages **********************************/
+
+    conversationChangedHandler = (convo) =>{
+        // get the last message
+        var lastMessage = this.state.conversation.lastMessageText.split(" ");
+        console.log("this is last message: " + lastMessage[0])
+
+        // special cases
+        switch (lastMessage[0]){
+            case keys.ACCEPT_KEYWORD:
+                this.onReceiveAccept();
+                break;
+            case keys.END_KEYWORD:
+                this.onReceiveEndCall();
+                break;
+            case keys.REROUTE_KEYWORD:
+                this.onReceiveReroute(lastMessage[1])
+                break;
+        }
+       
+
+        // create message that is suitable for kendo chat to display
+        let newMessage = Object.assign({});
+        newMessage.text = lastMessage;
+        newMessage.author = this.bot;
+        this.setState({
+            messages: [...this.state.messages, newMessage]
+        });
+    }
+
+
+    /******************************* MISC methods  **********************************/
+
+    sendKeyword = (keyword) => {
+        window.rainbowSDK.im.sendMessageToConversation(this.state.conversation, keyword);
+    }
+
+    disableTextInput = (bool) =>{
+        document.getElementsByClassName('k-input')[0].disabled = bool;
+    }
+
+    checkForTag = (msg)=>{
+        let newTag = "";
+        switch(msg){
+            case "Accounts and bills":
+                newTag = "AccountsNBills";
+                break;
+            case "Broadband":
+                newTag = "Boardband";
+                break;
+            case "Home line":
+                newTag = "HomeLine";
+                break;
+            case "Mobile prepaid":
+                newTag = "MobilePrepaid";
+                break;
+            case "Mobile postpaid":
+                newTag = "MobilePostpaid";
+                break;
+            case "Online purchases":
+                newTag = "OnlinePurchases";
+                break;
+            case "Lifestyle":
+                newTag = "Lifestyle";
+                break;
+            case "Singtel TV":
+                newTag = "TV";
+                break;
+        }
+        // console.log(msg);
+        // console.log(newTag);
+        if (newTag != ""){
+            this.setState({
+                tag: newTag
+            });
+        }
+    }
+
+    parseText = ( event ) => {
         if (event.action !== undefined) {
             return event.action.value;
         } else if ( event.value ) {
@@ -187,48 +275,119 @@ class Home extends React.Component{
         }
     }
 
+    addConversationListener = () => {
+        document.addEventListener(
+            window.rainbowSDK.conversations.RAINBOW_ONCONVERSATIONCHANGED,
+            this.conversationChangedHandler
+        );
+    }
+
+    /******************************* api methods  **********************************/
+    getAgent = () =>{
+        // parse url
+        let url = api.URI+api.REQUEST_AGENT+"?"+api.TAG+"="+this.state.tag;
+        console.log(url);
+
+        fetch(url)
+            .then( (res) => {
+                console.log(res)
+                res.json().then((data)=>{
+                    console.log(data)
+
+                    if (data.success){
+
+                        let agentId = data.agentId;
+                        // console.log(agentId);
+
+                        // establish connection
+                        this.openConversationWithAgentId(agentId);
+                    }
+                })
+            })
+            .catch(function(err) {
+                console.log('Fetch Error :-S', err);
+            });
+    }
+
+    // Gets another agent different from the current one
+    getAnotherAgent = () =>{
+        // send keyword to agent so agent knows to set availabilty to available
+        this.sendKeyword(keys.END_KEYWORD);
+
+        let notemail = this.state.contact.loginEmail;
+        console.log(notemail);
+
+        // parse url
+        let url = api.URI+api.REQUEST_AGENT+"?"+api.TAG+"="+this.state.tag+"&"+api.NOTEMAIL+"="+notemail;
+        // console.log(url);
+        
+        fetch(url)
+            .then( (res) => {
+                // console.log(res)
+                res.json().then((data)=>{
+                    console.log(data)
+
+                    if (data.success){
+
+                        let agentId = data.agentId;
+                        // console.log(agentId);
+
+                        // establish connection
+                        this.openConversationWithAgentId(agentId);
+                    }
+                })
+            })
+            .catch(function(err) {
+                console.log('Fetch Error :-S', err);
+            });
+    }
+
     login = () => {
         // Add REST API call here to replace the hardcoded username and pw
-        var rainbowLogin = "user1@singco.com";
-        var rainbowPassword = "Longpassword!1";
+        // var rainbowLogin = "user1@singco.com";
+        // var rainbowPassword = "Longpassword!1";
+
+        let url = api.URI+api.GET_ANON;
+        console.log(url);
+        fetch(url)
+            .then( (res) => {
+                res.json().then((data)=>{
+                    // console.log(data)
+
+                    if (data.status.success){
+                        let rainbowLogin = data.loginEmail;
+                        let rainbowPassword = data.password;
+
+                        window.rainbowSDK.connection.signin(rainbowLogin, rainbowPassword)
+                            .then(account => {
+                                console.log("Successful Login");
+                                console.log(account);
+                            })
+                            .catch(err => {
+                                console.log("failed to login")
+                                console.log(err);
+                            })
+                    }
+                })
+            })
+            .catch(function(err) {
+                console.log('Fetch Error :-S', err);
+            });
 
         if (typeof window.rainbowSDK === 'undefined'){
             return
         }
-
-        // console.log("logging in");
-        window.rainbowSDK.connection.signin(rainbowLogin, rainbowPassword)
-            .then(account => {
-                console.log("Successful Login");
-                console.log(account);
-            })
-            .catch(err => {
-                console.log("failed to login")
-                console.log(err);
-            })
     }
-
-    
-    // reroute to rainbow agent
-    reroute = () => {
-        // if reroute successful, userWaiting to false
-        this.setState({
-            userWaiting: true,
-            rainbowOnline: true
-        });
-    }
+   
     
     // Ends the call with rainbow Agent
     endCall = ()=>{
-        // The bot should be the one ending the message
-        this.bot = { name: "bot", id: Date.now().toString() }
-        let newMessage = Object.assign({});
-        newMessage.author = this.bot
-        newMessage.text = "Chat Session ended"
-        console.log("rainbowOnline" + this.state.rainbowOnline)
-        this.setState({
-            messages :[...this.state.messages,newMessage]
-        });
+
+        // send keyword to agent so agent knows to set availabilty to available
+        this.sendKeyword(keys.END_KEYWORD);
+
+        // handle as if agent sends the end call
+        this.onReceiveEndCall();
     }
 
     openConversationWithAgentId = (strId) =>{
@@ -259,7 +418,7 @@ class Home extends React.Component{
                     that.addConversationListener();
 
                     // send start keyword
-                    that.sendKeyword(START_KEYWORD);
+                    that.sendKeyword(keys.START_KEYWORD);
 
                 })
                 .catch(function(err){
@@ -269,48 +428,43 @@ class Home extends React.Component{
             .catch(function(err){
                 console.log(err);
             });
+    }    
 
-    }
-
-    sendKeyword = (keyword) => {
-        window.rainbowSDK.im.sendMessageToConversation(this.state.conversation, keyword);
-    }
-
-
-    addConversationListener = () => {
-        document.addEventListener(
-            window.rainbowSDK.conversations.RAINBOW_ONCONVERSATIONCHANGED,
-            this.conversationChangedHandler
-        );
-    }
-
-
-    conversationChangedHandler = (convo) =>{
-        // get the last message
-        let lastMessage = this.state.conversation.lastMessageText;
-        // console.log(lastMessage)
-
-        // special case "accept" keyword
-        if ( lastMessage == ACCEPT_KEYWORD ){
-
-            // set userWaiting to false to disable input
-            this.setState({
-                userWaiting: false
-            })
-        }
-
-        // create message that is suitable for kendo chat to display
-        let newMessage = Object.assign({});
-        newMessage.text = lastMessage;
-        newMessage.author = this.bot;
+    /******************************* keyword handler methods  **********************************/
+    onReceiveAccept = () => {
+        // set userWaiting to false to disable input
         this.setState({
-            messages: [...this.state.messages, newMessage]
+            userWaiting: false
         });
     }
 
-    disableTextInput = (bool) =>{
-        document.getElementsByClassName('k-input')[0].disabled = bool;
+    // redirect to rainbow agent
+    onReceiveReroute = (newTag) => {
+        // if reroute successful, userWaiting to false
+        this.setState({
+            userWaiting: true,
+            tag: newTag
+        });
+
+        // get agent
+        this.getAgent();
     }
+
+    onReceiveEndCall = () =>{
+
+        // The bot should be the one ending the message
+        this.bot = { name: "bot", id: Date.now().toString() }
+        let newMessage = Object.assign({});
+        newMessage.author = this.bot
+        newMessage.text = "Chat Session ended"
+        console.log("rainbowOnline" + this.state.rainbowOnline)
+        this.setState({
+            messages :[...this.state.messages,newMessage]
+        });
+    }
+
+
+    /******************************* Render  **********************************/
 
     render() {       
         return (
@@ -324,6 +478,7 @@ class Home extends React.Component{
                     width={400}>
                 </Chat>
                <Button onClick={this.endCall}>End Chat</Button>
+               <Button onClick={this.getAnotherAgent}>Get another Agent</Button>
             </div>
         );
     }
