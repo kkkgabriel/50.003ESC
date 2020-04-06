@@ -209,7 +209,7 @@ class Home extends React.Component {
 
         // create message that is suitable for kendo chat to display
         let newMessage = Object.assign({});
-        newMessage.text = lastMessage;
+        newMessage.text = lastMessage.join(" ");
         newMessage.author = this.bot;
         this.setState({
             messages: [...this.state.messages, newMessage]
