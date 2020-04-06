@@ -139,7 +139,6 @@ class Home extends React.Component {
                         type: "reply",
                         value: "Lifestyle"
                     }
-            
                 ];
             }
             if(messagecheck[messagecheck.length-1]==="right?"){
@@ -235,7 +234,7 @@ class Home extends React.Component {
                 newTag = "AccountsNBills";
                 break;
             case "Broadband":
-                newTag = "Boardband";
+                newTag = "Broadband";
                 break;
             case "Home line":
                 newTag = "HomeLine";
@@ -247,7 +246,7 @@ class Home extends React.Component {
                 newTag = "MobilePostpaid";
                 break;
             case "Online purchases":
-                newTag = "OnlinePurchases";
+                newTag = "OnlinePurchase";
                 break;
             case "Lifestyle":
                 newTag = "Lifestyle";
