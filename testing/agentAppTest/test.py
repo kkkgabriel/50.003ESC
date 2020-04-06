@@ -113,12 +113,12 @@ class PythonOrgSearch(unittest.TestCase):
         
         time.sleep(1)
         
-    def t_login_success(self):
+    def test_login_success(self):
         print("Testing login")
         self.log_in_success()
         print("Pass login test")
 
-    def t_login_logout(self):
+    def test_login_logout(self):
         print("Testing logout")
         self.log_in_success()
         self.actions_agent = ActionChains(self.driver_agent)
@@ -130,7 +130,7 @@ class PythonOrgSearch(unittest.TestCase):
         except:
             print("Failed to logout")
 
-    def t_accept_incoming_convo(self):
+    def test_accept_incoming_convo(self):
         print("Testing accepting conversation")
         self.initialize_user_and_agent_connection()
         #check for open dialog
@@ -150,7 +150,7 @@ class PythonOrgSearch(unittest.TestCase):
         except:
             print("failed test_accept_incoming_convo")
 
-    def t_decline_incoming_convo(self):
+    def test_decline_incoming_convo(self):
         print("Testing declining conversation")
         self.initialize_user_and_agent_connection()
         #check for open dialog
@@ -169,7 +169,7 @@ class PythonOrgSearch(unittest.TestCase):
         except:
             print("passed test_accept_decline_convo")
 
-    def t_send_message(self):
+    def test_send_message(self):
         print("Testing sending message")
         self.ongoing_conversation()
         time.sleep(2)
