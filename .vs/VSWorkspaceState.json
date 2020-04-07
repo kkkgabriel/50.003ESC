@@ -1,15 +1,7 @@
 {
   "ExpandedNodes": [
     "",
-    "\\agentApp\\app",
-    "\\agentApp\\app\\components",
-    "\\agentApp\\app\\components\\Home",
-    "\\userApp2",
-    "\\userApp2\\app",
-    "\\userApp2\\app\\assets",
-    "\\userApp2\\app\\components",
-    "\\userApp2\\app\\components\\chatbox",
-    "\\userApp2\\app\\styles"
+    "\\userApp2"
   ],
   "PreviewInSolutionExplorer": false
 }
