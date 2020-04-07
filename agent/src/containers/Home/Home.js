@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
 import { Chat } from '@progress/kendo-react-conversational-ui';
 import { connect } from 'react-redux';
-import * as consts from './constants.js.js';
+import * as consts from './constants.js';
 import { Redirect } from 'react-router-dom'
 import { authFail, authSignOut } from '../../store/actions/auth.js';
 import DialogHome from '../../components/DialogHome/DialogHome'
+import Toolbar from '../../components/Toolbar/Toolbar.js';
 class Home extends Component {
 
     constructor (props) {
@@ -19,11 +20,11 @@ class Home extends Component {
             };
 
         this.state = {
-            version: window.rainbowSDK.version(),
-            conversations: [],
             conversation: {},
             visible:false,
             isAvailable:false,
+            isAgentAvailable: true,
+            reroute:false,
             messages: []
 
         }
@@ -34,49 +35,105 @@ class Home extends Component {
             conversations: window.rainbowSDK.conversations.getAllConversations()
         },()=>{
             document.addEventListener(
-                window.rainbowSDK.conversations.RAINBOW_ONCONVERSATIONSCHANGED,
+                window.rainbowSDK.conversations.RAINBOW_ONCONVERSATIONCHANGED,
                 this.conversationsChangedHandler
             );
         })
     }
-    conversationsChangedHandler = (event)=>{
-        // why the state changed without any setState??
-        console.log("conversationsChangedHandler triggered");
-        console.log(event.detail)
-		if ( this.state.isAvailable ) {
-			this.updateRainbowMessages();
-		} else {
-			this.findNewConversation();
-		}
+    componentWillUnmount() {
+        window.rainbowSDK.connection.signout()
+        .then(() => {
+            console.log("Logout")
+            // dispatch
+            this.props.onLogout()
+        })
     }
+    conversationsChangedHandler = (event)=>{
+        console.log("conversationsChangedHandler triggered");
+        // console.log("isAvailable is: " + this.state.isAvailable);
+        if ( this.state.isAvailable ) {
+            // receive messages and update it on the chat 
+            this.updateRainbowMessages();
+        } else {
+            // check if its a new conversation
+            this.updateConversation(event.detail);  // event.detail contains the id of the conversation that changed
+        }
+    }
+
     done = ()=>{
         // close the chat
         // clear the message
         this.setState({
+            isAgentAvailable: true,
             isAvailable: false,
+            conversation: {},
             messages:[]
         })
     }
 
     reroute = () => {
+        // insert rest API here
+        console.log("rerouting")
+
+        // send popup for agent to choose which type of tags should agents be rerouted to
+        if (!this.state.reroute){
+            window.rainbowSDK.im.sendMessageToConversation(this.state.conversation, consts.REROUTE_KEYWORD);
+        }
+        this.setState({
+            reroute: !this.state.reroute,
+        })
+
         // close convo
         this.done()
         // send signal that you are available to the server
         // reroute to agent who is not him
+        
     }
+
+
     toggleDialog = ()=>{
-		console.log("toggling dialog");
+		// console.log("toggling dialog");
+
+        // if rejecting the call, send the reject keyword
+        if (this.state.visible){
+            window.rainbowSDK.im.sendMessageToConversation(this.state.conversation, consts.REJECT_KEYWORD);
+        }
         this.setState({
             visible: !this.state.visible
         });
     }
     
+    setAgentNotAvailable = () => {
+        this.setState({
+            isAgentAvailable: false
+        })
+    }
+
+    setAgentAvailable = () => {
+        this.setState({
+            isAgentAvailable: true
+        })
+    }
+
+    toggleIsAgentAvailable = () => {
+        // rest API send that the agent is available / not available
+        this.setState({
+            isAgentAvailable: !this.state.isAgentAvailable
+        })
+    }
     toggleisAvailable = ()=>{
+        // send message to other party if accept call
+        if (!this.state.isAvailable){
+            window.rainbowSDK.im.sendMessageToConversation(this.state.conversation, consts.ACCEPT_KEYWORD);
+        }
         this.setState({
             isAvailable: !this.state.isAvailable,
             visible: !this.state.visible
         })
+
+        // insert rest API here
     }
+   
 
     addNewMessage = (event)=>{
         let myResponse = Object.assign({}, event.message);
@@ -89,16 +146,18 @@ class Home extends Component {
         this.sendToRainbow(event.message);
     };
 
-    sendToRainbow(msg){
+    sendToRainbow = (msg) =>{
         // console.log("to add in rainbow send message here")
         console.log(msg);
-		window.rainbowSDK.im.sendMessageToConversation(this.state.conversation, msg.text);
+        window.rainbowSDK.im.sendMessageToConversation(this.state.conversation, msg.text);
     }
-
-	updateRainbowMessages = ()=>{	// display messages from rainbow conversation onto the kendo chat element
+    
+    // display messages from rainbow conversation onto the kendo chat element
+	updateRainbowMessages = ()=>{	
 		let lastMessage = this.state.conversation.messages[this.state.conversation.messages.length-1];
 		// console.log(lastMessage.side);
 		if ( lastMessage.side == "L" ){	// for rainbow, incoming messages are displayed on the left
+
 			let theirResponse = {
 				author: this.state.conversation.contact.loginEmail,
 				text: this.state.conversation.lastMessageText,
@@ -110,8 +169,40 @@ class Home extends Component {
 					theirResponse
 				]
 			}))
-		}
+        }
+        this.userEndCall()
 	}
+
+    updateConversation = (convoId) =>{
+        // console.log(convoId);
+
+        // find conversation object
+        let conversation = window.rainbowSDK.conversations.getConversationById(convoId)
+        // console.log(conversation);
+
+        // check if conversation has the start keyword
+        if ( conversation.lastMessageText == consts.START_KEYWORD ){
+            console.log("start found");
+
+            // set the conversation to the state conversation
+            this.setState({
+                conversation: conversation
+            });
+
+            // close the dialog
+            this.toggleDialog();
+            
+            // set agent status to unavailable
+            this.setAgentNotAvailable();
+
+            // change the bot name to the name of the other party in the convo
+            this.changeBot(conversation.name.value);
+
+            // display messages from rainbow conversation onto the kendo chat element
+            this.initializeMessages();
+
+        }
+    }
 
     initializeMessages = () => {
         this.setState({
@@ -124,35 +215,10 @@ class Home extends Component {
             ]
         })
     }
+
 	changeBot = (name)=>{
 		this.bot.name = name;
 	}
-
-    findNewConversation = ()=>{
-		let conversations = this.state.conversations;
-        var i = 0;
-        while (i < conversations.length ){
-            try {
-                if ( conversations[i].lastMessageText == consts.START_KEYWORD ){
-
-					//let lm = conversations[i].messages[conversations[i].messages.length-1];
-                    console.log("start found");
-					this.setState({
-						conversation: conversations[i]
-					});
-                    this.toggleDialog();
-					this.changeBot(conversations[i].name.value);
-					this.initializeMessages();	// display messages from rainbow conversation onto the kendo chat element
-					break;
-					// i = conversations.length;	// break the loop
-                }
-            } catch (error) {
-                // console.log(error);
-            }
-            i++;
-        }
-        return [];	// return empty conversation
-    }
 
     logoutHandler = ()=>{
         window.rainbowSDK.connection.signout()
@@ -161,6 +227,37 @@ class Home extends Component {
             this.props.onLogout()
             this.props.history.push('/')
         })
+    }
+
+    userEndCall = () => {
+        let lastMessage = this.state.conversation.messages[this.state.conversation.messages.length-1];
+        // console.log(lastMessage);
+        // console.log(lastMessage.data);
+		if ( lastMessage.data == consts.USER_END_PASSWORD ){	
+        // check if conversation has the userend keyword sent by user
+            console.log("calling userendcall")
+            this.done()
+        }
+
+        //rest api to update availability of agent in db
+    }
+    reroutetag = (element) => {
+        console.log("reroutetag")
+        console.log(element.text)
+        //map index of element.text to api calls
+
+    }
+
+
+    endCall = () =>{
+
+        // send special message to user to end the call
+        window.rainbowSDK.im.sendMessageToConversation(this.state.conversation, consts.END_KEYWORD);
+
+        // insert rest API here
+
+        // close everything
+        this.done();
     }
 
     render(){
@@ -174,8 +271,16 @@ class Home extends Component {
         return (
             <div>
                 {redirect}
+                <Toolbar 
+                    displayName={this.props.account.displayName}
+                    logout={this.logoutHandler}
+                    available={this.state.isAgentAvailable}
+                    toggleIsAgentAvailable={this.toggleIsAgentAvailable}
+                    isInCall = {this.state.isAvailable}/>
                 {/*<button className="k-button" onClick={this.toggleDialog}>Open Dialog</button>*/}
-                {this.state.isAvailable ? null:<div style={{textAlign:"center", margin:"2rem 0", width: "100%"}}>WAITING</div>}
+                {this.state.isAvailable ? null:<div style={{textAlign:"center", margin:"2rem 0", width: "100%"}}>
+                    {this.state.isAgentAvailable? "WAITING": "Taking a break"}
+                </div>}
                 {this.state.visible && 
                     <DialogHome
                         toggleDialog={this.toggleDialog}
@@ -190,10 +295,28 @@ class Home extends Component {
                             placeholder={"Type a message..."}
                             width={800}>
                         </Chat>
-                        <button className="k-button" onClick={this.reroute}>Reroute </button>
+                        <span style={{justifyContent:"center"}}>
+                            <button className="k-button" onClick={this.reroute}>Reroute </button>
+                            <button className="k-button" onClick={this.endCall}>End Call </button>
+                        </span>
                     </div>
                 }
-            <button onClick={this.logoutHandler}>Logout</button>
+                {this.state.reroute &&
+                    <div>
+                        {/* <h> client reroute: choose agent tag </h> */}
+                        <br></br>
+                        <span style={{justifyContent:"center"}}>
+                            <button className="k-button" onClick={this.reroutetag(this)}>AccountNBills </button>
+                            <button className="k-button" onClick={this.reroutetag(this)}>MobilePostpaid </button>
+                            <button className="k-button" onClick={this.reroutetag(this)}>MobilePrepaid </button>
+                            <button className="k-button" onClick={this.reroutetag(this)}>Broadband </button>
+                            <button className="k-button" onClick={this.reroutetag(this)}>TV </button>
+                            <button className="k-button" onClick={this.reroutetag(this)}>HomeLine </button>
+                            <button className="k-button" onClick={this.reroutetag(this)}>OnlinePurchase </button>
+                            <button className="k-button" onClick={this.reroutetag(this)}>Lifestyle</button>
+                        </span>
+                    </div>
+                }
             </div>
         );
     }
