@@ -119,18 +119,18 @@ class Home extends Component {
         // if rejecting the call, send the reject keyword
         if (this.state.visible){
             window.rainbowSDK.im.sendMessageToConversation(this.state.conversation, consts.REJECT_KEYWORD);
-            let url = consts.END_AGENT_CALL+consts.RAINBOWID_PARAM+"="+this.user.id;
-            fetch(url)
-                .then( res=>{
-                    res.json().then(data=>{
-                        if (!data.status.success){
-                            console.log(data.status.error.errorMsg);
-                        }
-                    })
-                })
-                .catch(err=>{
-                    console.log("error")
-                })
+            // let url = consts.END_AGENT_CALL+consts.RAINBOWID_PARAM+"="+this.user.id;
+            // fetch(url)
+            //     .then( res=>{
+            //         res.json().then(data=>{
+            //             if (!data.status.success){
+            //                 console.log(data.status.error.errorMsg);
+            //             }
+            //         })
+            //     })
+            //     .catch(err=>{
+            //         console.log("error")
+            //     })
         }
 
         this.setState({
@@ -151,11 +151,24 @@ class Home extends Component {
     }
 
     toggleIsAgentAvailable = () => {
+        let avail = "not available";
+        if (!this.state.isAgentAvailable){
+            avail = "available";
+        }
+        let url = consts.TOGGLE_AVAIL+consts.RAINBOWID_PARAM+"="+this.user.id+"&"+consts.AVAIL_PARAM+"="+avail;
         // rest API send that the agent is available / not available
-        this.setState({
-            isAgentAvailable: !this.state.isAgentAvailable
-        })
+        fetch(url)
+            .then(res=>{
+                res.json().then(data=>{
+                    if (data.status.success){
+                        this.setState({
+                            isAgentAvailable: !this.state.isAgentAvailable
+                        })
+                    }
+                })
+            })
     }
+
     toggleisAvailable = ()=>{
         // send message to other party if accept call
         if (!this.state.isAvailable){
@@ -283,7 +296,7 @@ class Home extends Component {
         let lastMessage = this.state.conversation.messages[this.state.conversation.messages.length-1];
         // console.log(lastMessage);
         // console.log(lastMessage.data);
-		if ( lastMessage.data == consts.USER_END_PASSWORD ){	
+		if ( lastMessage.data == consts.END_KEYWORD ){	
         // check if conversation has the userend keyword sent by user
             console.log("calling userendcall")
             this.done()
@@ -350,7 +363,7 @@ class Home extends Component {
                             }
                             { this.state.reroute &&
                                 <div>
-                                    <button className="k-button" onClick={()=>this.reroutetag("AccountNBills")}>AccountNBills</button>
+                                    <button className="k-button" onClick={()=>this.reroutetag("AccountsNBills")}>AccountNBills</button>
                                     <button className="k-button" onClick={()=>this.reroutetag("MobilePostpaid")}>MobilePostpaid</button>
                                     <button className="k-button" onClick={()=>this.reroutetag("MobilePrepaid")}>MobilePrepaid</button>
                                     <button className="k-button" onClick={()=>this.reroutetag("Broadband")}>Broadband</button>
