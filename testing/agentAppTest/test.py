@@ -6,7 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import time
-
+import requests
 
 class PythonOrgSearch(unittest.TestCase):
     def setUp(self):
@@ -17,6 +17,14 @@ class PythonOrgSearch(unittest.TestCase):
         if "'" not in s: return "'%s'" % s
         if '"' not in s: return '"%s"' % s
         return "concat('%s')" % s.replace("'", "',\"'\",'")
+
+    def reset(self):
+        print("----------------------------------------------------")
+        print("reseting db");
+        x = requests.get("http://neobow.appspot.com/reset?availability=1")
+        time.sleep(1)
+        x = requests.get("http://neobow.appspot.com/reset?availability=0")
+        print("----------------------------------------------------")
 
     def send_user_input(self, input_data):
         elemButton = self.driver_user.find_element_by_xpath("//button[@class='k-button k-flat k-button-icon k-button-send']")
@@ -68,7 +76,7 @@ class PythonOrgSearch(unittest.TestCase):
         self.driver_user.get("http://127.0.0.1:3010")
         time.sleep(2)
 
-    def initialize_user_and_agent_connection(self, user_name = "Gabriel", phone = "0123456789", problem = "Mobile Postpaid"):
+    def initialize_user_and_agent_connection(self, user_name = "Gabriel", phone = "0123456789", problem = "Mobile postpaid"):
         self.establishing_connection()
         
         self.send_user_input(user_name)
@@ -89,7 +97,7 @@ class PythonOrgSearch(unittest.TestCase):
         elemResult = EC.presence_of_element_located((By.XPATH,"//div[@class='k-bubble'][contains(text(),'Is that right?')]"))
         wait.until(elemResult)
 
-        confirm = "yes"
+        confirm = "Yes"
         self.send_user_input(confirm)
 
         # elemResult = self.driver_user.find_element_by_xpath("//div[@class='k-bubble'][contains(text(),'agent!')]")
@@ -114,14 +122,17 @@ class PythonOrgSearch(unittest.TestCase):
         time.sleep(1)
         
     def test_login_success(self):
-        print("Testing login")
+        self.reset();
+        print("\ntest_login_success");
         self.log_in_success()
         print("Pass login test")
 
     def test_login_logout(self):
-        print("Testing logout")
+        self.reset();
+        print("\ntest_login_logout");
         self.log_in_success()
         self.actions_agent = ActionChains(self.driver_agent)
+        self.driver_agent.maximize_window()
         try:
             elem_logout = self.driver_agent.find_element_by_xpath("//button[contains(text(),'Logout')]")
             self.actions_agent.click(elem_logout).perform()
@@ -131,11 +142,12 @@ class PythonOrgSearch(unittest.TestCase):
             print("Failed to logout")
 
     def test_accept_incoming_convo(self):
-        print("Testing accepting conversation")
+        self.reset();
+        print("\ntest_accept_incoming_convo");
         self.initialize_user_and_agent_connection()
         #check for open dialog
         self.actions_agent = ActionChains(self.driver_agent)
-        time.sleep(2)
+        time.sleep(10)
         try:
             elem_accept = self.driver_agent.find_element_by_xpath("//button[contains(text(),'Accept')]")
             # print("accept button found")
@@ -150,8 +162,11 @@ class PythonOrgSearch(unittest.TestCase):
         except:
             print("failed test_accept_incoming_convo")
 
+
+
     def test_decline_incoming_convo(self):
-        print("Testing declining conversation")
+        self.reset();
+        print("\ntest_decline_incoming_convo");
         self.initialize_user_and_agent_connection()
         #check for open dialog
         self.actions_agent = ActionChains(self.driver_agent)
@@ -170,7 +185,8 @@ class PythonOrgSearch(unittest.TestCase):
             print("passed test_accept_decline_convo")
 
     def test_send_message(self):
-        print("Testing sending message")
+        self.reset();
+        print("\ntest_send_message");
         self.ongoing_conversation()
         time.sleep(2)
         #sends a message to user
@@ -180,10 +196,12 @@ class PythonOrgSearch(unittest.TestCase):
         print("Pass send message")
     
     def test_take_a_break(self):
-        print("Testing taking a break")
+        self.reset();
+        print("\ntest_take_a_break");
         self.log_in_success()
 
         time.sleep(1)
+        self.driver_agent.maximize_window()
         elem_button = self.driver_agent.find_element_by_xpath("//button[contains(text(),'break')]")
         elem_button.click()
         time.sleep(1)
@@ -195,7 +213,8 @@ class PythonOrgSearch(unittest.TestCase):
         print("Pass taking a break")
     
     def test_multiple_login(self):
-        print("multiple_login")
+        self.reset();
+        print("\ntest_multiple_login");
         self.log_in_success()
         self.driver_agent_2 = webdriver.Chrome()
         self.driver_agent_2.get("http://127.0.0.1:3000")
@@ -214,6 +233,7 @@ class PythonOrgSearch(unittest.TestCase):
             print("passed multiple login")
         except:
             print("failed multiple login")
+
     def tearDown(self):
         self.driver_agent.close()
         self.driver_user.close()
