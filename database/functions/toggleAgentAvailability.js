@@ -3,16 +3,14 @@ var router = express.Router();
 const connection = require('../database');
 
 router.get(
-	'/agentsignout',
-	(req, res, next)=>{
+	'/toggleagentavailability', 
+	function(req, res, next) {
 		let rainbowid = req.query.rainbowid;
+		let availability = req.query.availability;
 		connection.query(
-			/* updates the availability of the agent after successful login*/
-			"UPDATE `techentries` SET `loggedin`=0,`status`='not available' WHERE `rainbowid` = ?", rainbowid,
-
+			"UPDATE techentries SET status=? WHERE `rainbowid` = ?;", [availability,rainbowid],
 			function(error, results, fields) {
-				if (error) res.status(500).send(error);
-				// console.log(results);
+				if (error) throw error;
 				let status = {
 					success: true,
 					error: {
@@ -23,12 +21,12 @@ router.get(
 				if (results.affectedRows == 1){
 					if (results.message != "(Rows matched: 1  Changed: 1  Warnings: 0" ){
 						status.success = false;
-						status.error.errorMsg = "Agent account already logged out";
+						status.error.errorMsg = "agent account already "+availability;
 						status.error.errorId = 1;
 					}
 				} else {
 					status.success = false;
-					status.error.errorMsg = "Agent account not found";
+					status.error.errorMsg = "agent account not found";
 					status.error.errorId = 2;
 				}
 				res.json({status: status});

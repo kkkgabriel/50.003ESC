@@ -204,6 +204,9 @@ class Home extends React.Component {
             case keys.REROUTE_KEYWORD:
                 this.onReceiveReroute(lastMessage[1])
                 break;
+            case keys.REJECT_KEYWORD:
+                this.onReceiveReject();
+                break;
         }
        
 
@@ -430,6 +433,15 @@ class Home extends React.Component {
     }    
 
     /******************************* keyword handler methods  **********************************/
+    onReceiveReject= ()=>{
+        this.setState({
+            userWaiting: true
+        });
+
+        // get agent
+        this.getAgent();
+    }
+
     onReceiveAccept = () => {
         // set userWaiting to false to disable input
         this.setState({

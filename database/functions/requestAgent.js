@@ -91,7 +91,7 @@ var MobilePrepaidq = async.queue(function(task,callback){
 var Broadbandq = async.queue(function(task,callback){
     loop("Broadband", task.notemail,callback);
 },1);
-var singtelTVq = async.queue(function(task,callback){
+var TVq = async.queue(function(task,callback){
     loop("TV", task.notemail,callback);
 },1);
 var HomeLineq = async.queue(function(task,callback){
@@ -124,8 +124,8 @@ MobilePrepaidq.error(function(err, task) {
 Broadbandq.error(function(err, task) {
     error_log("Broadbandq",task.name)
 });
-singtelTVq.error(function(err, task) {
-    error_log("singtelTVq",task.name)
+TVq.error(function(err, task) {
+    error_log("TVq",task.name)
 });
 HomeLineq.error(function(err, task) {
     error_log("HomeLineq",task.name)

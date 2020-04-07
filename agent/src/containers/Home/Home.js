@@ -69,6 +69,22 @@ class Home extends Component {
             conversation: {},
             messages:[]
         })
+
+        console.log(this.user.id);
+        let url = consts.END_AGENT_CALL+consts.RAINBOWID_PARAM+"="+this.user.id;
+        fetch(url)
+            .then( res=>{
+                res.json().then(data=>{
+                    if (!data.status.success){
+                        console.log(data.status.error.errorMsg);
+                    }
+                })
+            })
+            .catch(err=>{
+                console.log("error")
+            })
+
+
     }
 
     reroute = () => {
@@ -76,18 +92,24 @@ class Home extends Component {
         console.log("rerouting")
 
         // send popup for agent to choose which type of tags should agents be rerouted to
-        if (!this.state.reroute){
-            window.rainbowSDK.im.sendMessageToConversation(this.state.conversation, consts.REROUTE_KEYWORD);
-        }
+        // if (!this.state.reroute){
+        //     window.rainbowSDK.im.sendMessageToConversation(this.state.conversation, consts.REROUTE_KEYWORD);
+        // }
         this.setState({
             reroute: !this.state.reroute,
         })
+    }
+
+    reroutetag = (value) => {
+
+        console.log("reroutetag")
+        console.log(value)
+
+        // send special message to user to end the call
+        window.rainbowSDK.im.sendMessageToConversation(this.state.conversation, consts.REROUTE_KEYWORD+" "+value);
 
         // close convo
         this.done()
-        // send signal that you are available to the server
-        // reroute to agent who is not him
-        
     }
 
 
@@ -97,7 +119,20 @@ class Home extends Component {
         // if rejecting the call, send the reject keyword
         if (this.state.visible){
             window.rainbowSDK.im.sendMessageToConversation(this.state.conversation, consts.REJECT_KEYWORD);
+            // let url = consts.END_AGENT_CALL+consts.RAINBOWID_PARAM+"="+this.user.id;
+            // fetch(url)
+            //     .then( res=>{
+            //         res.json().then(data=>{
+            //             if (!data.status.success){
+            //                 console.log(data.status.error.errorMsg);
+            //             }
+            //         })
+            //     })
+            //     .catch(err=>{
+            //         console.log("error")
+            //     })
         }
+
         this.setState({
             visible: !this.state.visible
         });
@@ -116,11 +151,24 @@ class Home extends Component {
     }
 
     toggleIsAgentAvailable = () => {
+        let avail = "not available";
+        if (!this.state.isAgentAvailable){
+            avail = "available";
+        }
+        let url = consts.TOGGLE_AVAIL+consts.RAINBOWID_PARAM+"="+this.user.id+"&"+consts.AVAIL_PARAM+"="+avail;
         // rest API send that the agent is available / not available
-        this.setState({
-            isAgentAvailable: !this.state.isAgentAvailable
-        })
+        fetch(url)
+            .then(res=>{
+                res.json().then(data=>{
+                    if (data.status.success){
+                        this.setState({
+                            isAgentAvailable: !this.state.isAgentAvailable
+                        })
+                    }
+                })
+            })
     }
+
     toggleisAvailable = ()=>{
         // send message to other party if accept call
         if (!this.state.isAvailable){
@@ -221,19 +269,34 @@ class Home extends Component {
 	}
 
     logoutHandler = ()=>{
-        window.rainbowSDK.connection.signout()
-        .then(() => {
-            // dispatch
-            this.props.onLogout()
-            this.props.history.push('/')
-        })
+        let url = consts.AGENT_SIGN_OUT+consts.RAINBOWID_PARAM+"="+this.user.id;
+
+        fetch(url)
+            .then(res=>{
+                res.json().then(data=>{
+                    if (data.status.success){
+                        window.rainbowSDK.connection.signout()
+                            .then(() => {
+                                // dispatch
+                                this.props.onLogout()
+                                this.props.history.push('/')
+                            })
+                    }
+                })
+            })
+            .catch(err=>{
+                console.log("sth went wrong")
+                console.log(err)
+            });
+
+        
     }
 
     userEndCall = () => {
         let lastMessage = this.state.conversation.messages[this.state.conversation.messages.length-1];
         // console.log(lastMessage);
         // console.log(lastMessage.data);
-		if ( lastMessage.data == consts.USER_END_PASSWORD ){	
+		if ( lastMessage.data == consts.END_KEYWORD ){	
         // check if conversation has the userend keyword sent by user
             console.log("calling userendcall")
             this.done()
@@ -241,12 +304,8 @@ class Home extends Component {
 
         //rest api to update availability of agent in db
     }
-    reroutetag = (element) => {
-        console.log("reroutetag")
-        console.log(element.text)
-        //map index of element.text to api calls
 
-    }
+    
 
 
     endCall = () =>{
@@ -296,24 +355,25 @@ class Home extends Component {
                             width={800}>
                         </Chat>
                         <span style={{justifyContent:"center"}}>
-                            <button className="k-button" onClick={this.reroute}>Reroute </button>
-                            <button className="k-button" onClick={this.endCall}>End Call </button>
-                        </span>
-                    </div>
-                }
-                {this.state.reroute &&
-                    <div>
-                        {/* <h> client reroute: choose agent tag </h> */}
-                        <br></br>
-                        <span style={{justifyContent:"center"}}>
-                            <button className="k-button" onClick={this.reroutetag(this)}>AccountNBills </button>
-                            <button className="k-button" onClick={this.reroutetag(this)}>MobilePostpaid </button>
-                            <button className="k-button" onClick={this.reroutetag(this)}>MobilePrepaid </button>
-                            <button className="k-button" onClick={this.reroutetag(this)}>Broadband </button>
-                            <button className="k-button" onClick={this.reroutetag(this)}>TV </button>
-                            <button className="k-button" onClick={this.reroutetag(this)}>HomeLine </button>
-                            <button className="k-button" onClick={this.reroutetag(this)}>OnlinePurchase </button>
-                            <button className="k-button" onClick={this.reroutetag(this)}>Lifestyle</button>
+                            { !this.state.reroute &&
+                                <div>
+                                    <button className="k-button" onClick={this.reroute}>Reroute </button>
+                                    <button className="k-button" onClick={this.endCall}>End Call </button>
+                                </div>
+                            }
+                            { this.state.reroute &&
+                                <div>
+                                    <button className="k-button" onClick={()=>this.reroutetag("AccountsNBills")}>AccountNBills</button>
+                                    <button className="k-button" onClick={()=>this.reroutetag("MobilePostpaid")}>MobilePostpaid</button>
+                                    <button className="k-button" onClick={()=>this.reroutetag("MobilePrepaid")}>MobilePrepaid</button>
+                                    <button className="k-button" onClick={()=>this.reroutetag("Broadband")}>Broadband</button>
+                                    <button className="k-button" onClick={()=>this.reroutetag("TV")}>TV</button>
+                                    <button className="k-button" onClick={()=>this.reroutetag("HomeLine")}>HomeLine</button>
+                                    <button className="k-button" onClick={()=>this.reroutetag("OnlinePurchase")}>OnlinePurchase </button>
+                                    <button className="k-button" onClick={()=>this.reroutetag("Lifestyle")}>Lifestyle</button>
+                                    <button className="k-button" onClick={this.reroute}>Back</button>
+                                </div>
+                            }
                         </span>
                     </div>
                 }
