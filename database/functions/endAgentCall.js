@@ -5,9 +5,9 @@ const connection = require('../database');
 router.get(
 	'/endagentcall', 
 	function(req, res, next) {
-		let email = req.query.email;
+		let rainbowid = req.query.rainbowid;
 		connection.query(
-			"UPDATE techentries SET status='available' WHERE email = ? and `loggedin`=1", email,
+			"UPDATE techentries SET status='available' WHERE rainbowid = ? and `loggedin`=1", rainbowid,
 			function(error, results, fields) {
 				if (error) throw error;
 				let status = {

@@ -25,10 +25,12 @@ app.use(cors())
 const agentLogin = require('./functions/agentLogin');
 const endAgentCall = require('./functions/endAgentCall');
 const agentSignOut = require('./functions/agentSignOut');
+const toggleAgentAvailability = require('./functions/toggleAgentAvailability');
 
 app.use('/', agentLogin); 
 app.use('/', endAgentCall);
 app.use('/', agentSignOut);
+app.use('/', toggleAgentAvailability);
 
 
 /************************* user methods ****************************
@@ -51,9 +53,15 @@ app.get('/status', (req, res) => res.send('noice!'));
 // Reset method just for our convenience
 app.get('/reset',
 	(req, res)=>{
+		let status = 'not available';
+		let loggedin = 0;
+		if (req.query.availability != null && req.query.availability==1){
+			status = 'available';
+			loggedin = 1;
+		}
 		connection.query(
 			/* updates the availability of the agent after successful login*/
-			"UPDATE `techentries` SET `loggedin`=0,`status`='not available'",
+			"UPDATE `techentries` SET `loggedin`=?,`status`=?",[loggedin, status],
 
 			function(error, results, fields) {
 				if (error) res.status(500).send(error);
@@ -62,5 +70,5 @@ app.get('/reset',
 		);
 	});
 
-// Port 8080 for Google App Engine
+/// Port 8080 for Google App Engine
 app.listen(process.env.PORT || 3000);
