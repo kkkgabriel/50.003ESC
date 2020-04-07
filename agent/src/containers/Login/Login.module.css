@@ -6,10 +6,12 @@
 
 .spinner_bg{
     background-color: rgba(237, 237, 237, 0.5);
-    z-index: 10;
-    position: absolute;
+    z-index: 100;
+    position: fixed;
     width: 100%;
-    top: 0px;
+    height: 100%;
+    top: 0;
+    left: 0;
 }
 .spinner {
     color: black;
@@ -17,7 +19,7 @@
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    z-index: 20;
+    z-index: 200;
   }
   
   .spinner:after {

@@ -5,6 +5,7 @@ import * as consts from './constants.js';
 import { Redirect } from 'react-router-dom'
 import { authFail, authSignOut } from '../../store/actions/auth.js';
 import DialogHome from '../../components/DialogHome/DialogHome'
+import Toolbar from '../../components/Toolbar/Toolbar.js';
 class Home extends Component {
 
     constructor (props) {
@@ -22,6 +23,7 @@ class Home extends Component {
             conversation: {},
             visible:false,
             isAvailable:false,
+            isAgentAvailable: true,
             reroute:false,
             messages: []
 
@@ -36,6 +38,14 @@ class Home extends Component {
                 window.rainbowSDK.conversations.RAINBOW_ONCONVERSATIONCHANGED,
                 this.conversationsChangedHandler
             );
+        })
+    }
+    componentWillUnmount() {
+        window.rainbowSDK.connection.signout()
+        .then(() => {
+            console.log("Logout")
+            // dispatch
+            this.props.onLogout()
         })
     }
     conversationsChangedHandler = (event)=>{
@@ -54,6 +64,7 @@ class Home extends Component {
         // close the chat
         // clear the message
         this.setState({
+            isAgentAvailable: true,
             isAvailable: false,
             conversation: {},
             messages:[]
@@ -92,6 +103,24 @@ class Home extends Component {
         });
     }
     
+    setAgentNotAvailable = () => {
+        this.setState({
+            isAgentAvailable: false
+        })
+    }
+
+    setAgentAvailable = () => {
+        this.setState({
+            isAgentAvailable: true
+        })
+    }
+
+    toggleIsAgentAvailable = () => {
+        // rest API send that the agent is available / not available
+        this.setState({
+            isAgentAvailable: !this.state.isAgentAvailable
+        })
+    }
     toggleisAvailable = ()=>{
         // send message to other party if accept call
         if (!this.state.isAvailable){
@@ -153,7 +182,7 @@ class Home extends Component {
 
         // check if conversation has the start keyword
         if ( conversation.lastMessageText == consts.START_KEYWORD ){
-            // console.log("start found");
+            console.log("start found");
 
             // set the conversation to the state conversation
             this.setState({
@@ -162,6 +191,9 @@ class Home extends Component {
 
             // close the dialog
             this.toggleDialog();
+            
+            // set agent status to unavailable
+            this.setAgentNotAvailable();
 
             // change the bot name to the name of the other party in the convo
             this.changeBot(conversation.name.value);
@@ -239,8 +271,16 @@ class Home extends Component {
         return (
             <div>
                 {redirect}
+                <Toolbar 
+                    displayName={this.props.account.displayName}
+                    logout={this.logoutHandler}
+                    available={this.state.isAgentAvailable}
+                    toggleIsAgentAvailable={this.toggleIsAgentAvailable}
+                    isInCall = {this.state.isAvailable}/>
                 {/*<button className="k-button" onClick={this.toggleDialog}>Open Dialog</button>*/}
-                {this.state.isAvailable ? null:<div style={{textAlign:"center", margin:"2rem 0", width: "100%"}}>WAITING</div>}
+                {this.state.isAvailable ? null:<div style={{textAlign:"center", margin:"2rem 0", width: "100%"}}>
+                    {this.state.isAgentAvailable? "WAITING": "Taking a break"}
+                </div>}
                 {this.state.visible && 
                     <DialogHome
                         toggleDialog={this.toggleDialog}
@@ -277,7 +317,6 @@ class Home extends Component {
                         </span>
                     </div>
                 }
-            <button onClick={this.logoutHandler}>Logout</button>
             </div>
         );
     }
