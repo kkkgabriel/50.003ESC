@@ -7,6 +7,8 @@ import { authSuccess, authStart, authFail, authSignOut } from '../../store/actio
 import { connect } from 'react-redux';
 import LoginForm from '../../components/LoginForm/LoginForm';
 
+const AGENT_LOGIN = "http://www.neobow.appspot.com/agentlogin";
+
 class Login extends Component{
     state = {
         email: '',
@@ -28,22 +30,59 @@ class Login extends Component{
         event.preventDefault()
         // var rainbowLogin = "mario.kosasih@gmail.com"
         // var rainbowPassword = "6OCJc97dWp*2"
+
         if (typeof window.rainbowSDK === 'undefined'){
             return
         }
+
+        let url = AGENT_LOGIN+"?email="+this.state.email+"&password="+this.state.password;
+        console.log(url);
+
         this.props.authStart()
-        window.rainbowSDK.connection.signin(this.state.email, this.state.password)
-            .then(account => {
-                console.log("Successful Login")
-                console.log(account)
-                // route to agent page
-                this.props.authSuccess(account.account.loginEmail,account.account.userId, account.userData.displayName, account.token)
-                this.props.history.push('/home')
+        fetch(url)
+            .then(res=>{
+                console.log(res);
+                res.json().then((data)=>{
+                    console.log(data);
+                    if (data.status.success){
+                        window.rainbowSDK.connection.signin(this.state.email, this.state.password)
+                            .then(account => {
+                                console.log("Successful Login")
+                                console.log(account)
+                                // route to agent page
+                                this.props.authSuccess(account.account.loginEmail,account.account.userId, account.userData.displayName, account.token)
+                                this.props.history.push('/home')
+                            })
+                            .catch(err => {
+                                throw err;
+                            })
+                    } else {
+                        this.props.authFail(data.status.error.errorMsg)
+                        console.log(data.status.error.errorMsg)
+                    }
+                });
+
             })
-            .catch(err => {
+            .catch( err=>{
                 this.props.authFail(err.label)
                 console.log("failed to login")
             })
+
+
+
+        // this.props.authStart()
+        // window.rainbowSDK.connection.signin(this.state.email, this.state.password)
+        //     .then(account => {
+        //         console.log("Successful Login")
+        //         console.log(account)
+        //         // route to agent page
+        //         this.props.authSuccess(account.account.loginEmail,account.account.userId, account.userData.displayName, account.token)
+        //         this.props.history.push('/home')
+        //     })
+        //     .catch(err => {
+        //         this.props.authFail(err.label)
+        //         console.log("failed to login")
+        //     })
     }
 
     onInputChange = (event)=>{
