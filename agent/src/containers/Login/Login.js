@@ -90,10 +90,6 @@ class Login extends Component{
         login[event.target.name] = event.target.value
         this.setState(login)
         console.log(login)
-        this.state.email = sanitiseInput(this.state.email)
-        this.state.password = sanitiseInput(this.state.password)
-        console.log(this.state.email)
-        console.log(this.state.password)
     }
     
     render() {
@@ -131,17 +127,3 @@ const mapStateToProps = state => {
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Login))
-
-//sanitise input to p
-function sanitiseInput(str){
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#x27;',
-        "/": '&#x2F;',
-    };
-    const reg = /[&<>"'/]/ig;
-    return str.replace(reg, (match)=>(map[match]));
-}
