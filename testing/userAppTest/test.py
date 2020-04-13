@@ -6,6 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import time
+import requests
 
 class userAppTest(unittest.TestCase):
     def setUp(self):
@@ -20,6 +21,14 @@ class userAppTest(unittest.TestCase):
         if "'" not in s: return "'%s'" % s
         if '"' not in s: return '"%s"' % s
         return "concat('%s')" % s.replace("'", "',\"'\",'")
+
+    def reset(self):        
+        print("----------------------------------------------------")
+        print("reseting db");
+        x = requests.get("http://neobow.appspot.com/reset?availability=1")
+        time.sleep(1)
+        x = requests.get("http://neobow.appspot.com/reset?availability=0")
+        print("----------------------------------------------------")
 
     def send_user_input(self, input_data):
         elemButton = self.driver_user.find_element_by_xpath("//button[@class='k-button k-flat k-button-icon k-button-send']")
@@ -50,10 +59,11 @@ class userAppTest(unittest.TestCase):
         time.sleep(1)
 
     def talk_to_bot(self):
-        self.driver_user.get("http://127.0.0.1:4000")
+        print('talk_to_bot')
+        self.driver_user.get("http://127.0.0.1:3010")
         self.actions_user = ActionChains(self.driver_user)
         wait = WebDriverWait(self.driver_user,1)
-        time.sleep(2)
+        time.sleep(10)  
 
         name = "Gabriel"
         self.send_user_input(name)
@@ -76,7 +86,7 @@ class userAppTest(unittest.TestCase):
         elemResult = EC.presence_of_element_located((By.XPATH,"//div[@class='k-bubble'][contains(text(),'Is that right?')]"))
         wait.until(elemResult)
 
-        confirm = "yes"
+        confirm = "Yes"
         self.send_user_input(confirm)
 
         # elemResult = self.driver_user.find_element_by_xpath("//div[@class='k-bubble'][contains(text(),'agent!')]")
@@ -90,9 +100,10 @@ class userAppTest(unittest.TestCase):
         time.sleep(1)
 
     def initialize_agent(self, email, password):
+        print('initialize_agent')
         self.driver_agent.get("http://127.0.0.1:3000")
         self.actions_agent = ActionChains(self.driver_agent)
-        time.sleep(5)
+        time.sleep(1)
         elem_username = self.driver_agent.find_element_by_name("email")
         elem_username.send_keys(email)
         time.sleep(1)
@@ -108,19 +119,24 @@ class userAppTest(unittest.TestCase):
 
         
     def test_talk_to_bot(self):
+        self.reset();
+        print("test_talk_to_bot")
         self.talk_to_bot()
         time.sleep(1)
-    
+        
     def test_talk_to_agent(self):
+        self.reset();
+        print("test_talk_to_agent")
         # use mobile postpaid  as an example
         email = "MobilePostpaid@gmail.com"
         password = "Longpassword!1"
         self.initialize_agent(email, password)
         self.talk_to_bot()
 
+        time.sleep(10)
+
         # agent accept the call
         self.actions_agent = ActionChains(self.driver_agent)
-
         elem_accept = self.driver_agent.find_element_by_xpath("//button[contains(text(),'Accept')]")
         self.actions_agent.click(elem_accept).perform()
 

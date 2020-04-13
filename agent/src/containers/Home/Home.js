@@ -38,6 +38,19 @@ class Home extends Component {
                 window.rainbowSDK.conversations.RAINBOW_ONCONVERSATIONCHANGED,
                 this.conversationsChangedHandler
             );
+
+            let url = consts.TOGGLE_AVAIL+consts.RAINBOWID_PARAM+"="+this.user.id+"&"+consts.AVAIL_PARAM+"="+"available";
+            // rest API send that the agent is available / not available
+            fetch(url)
+                .then(res=>{
+                    res.json().then(data=>{
+                        if (data.status.success){
+                            this.setState({
+                                isAgentAvailable: true
+                            })
+                        }
+                    })
+                })
         })
     }
     componentWillUnmount() {
@@ -48,6 +61,7 @@ class Home extends Component {
             this.props.onLogout()
         })
     }
+
     conversationsChangedHandler = (event)=>{
         console.log("conversationsChangedHandler triggered");
         // console.log("isAvailable is: " + this.state.isAvailable);
