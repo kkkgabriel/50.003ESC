@@ -10,7 +10,7 @@ router
 		let agentpw = req.query.password;
 		connection.query(
 			/* updates the availability of the agent after successful login*/
-			"UPDATE `techentries` SET `loggedin`=1,`status`='available' WHERE `email` = ? and `techpw` = ?" , [agentemail,agentpw],
+			"UPDATE `techentries` SET `loggedin`=1 WHERE `email` = ? and `techpw` = ?" , [agentemail,agentpw],
 
 			function(error, results, fields) {
 				let status = {
