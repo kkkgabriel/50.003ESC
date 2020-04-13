@@ -5,6 +5,8 @@ var router = express.Router();
 const connection = require('../database');
 
 var tasksList = ["AccountsNBills","MobilePostpaid","MobilePrepaid","Broadband","TV","HomeLine","OnlinePurchase","Lifestyle"];
+var timeBeforeTimeout =3000;
+
 
 function isEmpty(obj) {
     for(var key in obj) {
@@ -19,7 +21,24 @@ async function loop(tag, notemail,callback){
     var complete = false;
     /* think busy waiting maybe quite a stupid method, but since this is a asynchronous queue why not?
     probably have to check for heap overflow */
-    while(!complete){
+    //create an async timer to wait
+    var timeout = false;
+    async function wait(ms) {
+        return new Promise(resolve => {
+          setTimeout(resolve, ms);
+        });
+      }
+    (async () => {
+        // await setTimeout(function(){
+        //     console.log("timeout completed");
+        //     timeout=true;
+        // }, timeBeforeTimeout);
+        await wait(timeBeforeTimeout)
+        timeout=true;
+        console.log("timeout completed");
+            
+    })()
+    while(!complete&&!timeout){
         var response = await axios.get("https://neobow.appspot.com/techrequest",{
             params:{
                 tag:tag,
@@ -32,7 +51,32 @@ async function loop(tag, notemail,callback){
             complete = true;
         } 
     }
-    callback(null,response.data)
+    // async.parallel({
+    //     timer: function(callback){
+    //         await sleep(timeBeforeTimeout);
+    //         console.log("timeout completed");
+    //         timeout=true;
+    //     },
+    //     whileloop : function(callback){
+    //         while(!complete&&!timeout){
+    //                 var response = await axios.get("https://neobow.appspot.com/techrequest",{
+    //                     params:{
+    //                         tag:tag,
+    //                         notemail: notemail
+    //                     }
+    //                 })
+    //                 console.log(response.data)
+    //                 console.log(response.data.success);
+    //                 if (response.data.success == true){
+    //                     complete = true;
+    //                 } 
+    //     }}});
+    if(complete){
+        callback(null,response.data)
+    }else{
+        console.log("its a timeout");
+    }
+    
 }
 
 // async function makeQuery(tag, callback){
