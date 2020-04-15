@@ -6,13 +6,23 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import time
-
+import requests
 
 class PythonOrgSearch(unittest.TestCase):
     tag = "AccountsNBills"
     def setUp(self):
         self.driver_agent = webdriver.Chrome()
         self.driver_user = webdriver.Chrome()
+
+
+
+    def reset(self):        
+        print("----------------------------------------------------")
+        print("reseting db");
+        x = requests.get("http://neobow.appspot.com/reset?availability=1")
+        time.sleep(1)
+        x = requests.get("http://neobow.appspot.com/reset?availability=0")
+        print("----------------------------------------------------")
     
     def log_out1(self):
         logout = self.driver_agent.find_element_by_xpath("//button[@class='btn btn-danger']")
@@ -54,7 +64,7 @@ class PythonOrgSearch(unittest.TestCase):
         elemResult = EC.presence_of_element_located((By.XPATH,"//div[@class='k-bubble'][contains(text(),'Is that right?')]"))
         wait.until(elemResult)
 
-        confirm = "yes"
+        confirm = "Yes"
         self.send_user_input(confirm)
 
         # elemResult = self.driver_user.find_element_by_xpath("//div[@class='k-bubble'][contains(text(),'agent!')]")
@@ -116,6 +126,7 @@ class PythonOrgSearch(unittest.TestCase):
     #         self.log_out2()
 
     def test_available_toggle(self):
+        self.reset();
         self.log_in_1()
         time.sleep(5)
         elem_toggle = self.driver_agent.find_element_by_xpath("//button[@class='btn btn-light']")
@@ -139,6 +150,7 @@ class PythonOrgSearch(unittest.TestCase):
             self.log_out2()
 
     def test_reroute(self):
+        self.reset();
         self.log_in_1()
         self.log_in_2()
         self.user1_communicate()

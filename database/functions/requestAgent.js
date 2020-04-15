@@ -5,7 +5,7 @@ var router = express.Router();
 const connection = require('../database');
 
 var tasksList = ["AccountsNBills","MobilePostpaid","MobilePrepaid","Broadband","TV","HomeLine","OnlinePurchase","Lifestyle"];
-var timeBeforeTimeout =3000;
+var timeBeforeTimeout =5000;
 
 
 function isEmpty(obj) {
@@ -27,7 +27,7 @@ async function loop(tag, notemail,callback){
         return new Promise(resolve => {
           setTimeout(resolve, ms);
         });
-      }
+    }
     (async () => {
         // await setTimeout(function(){
         //     console.log("timeout completed");
@@ -39,6 +39,7 @@ async function loop(tag, notemail,callback){
             
     })()
     while(!complete&&!timeout){
+        console.log("trying to get sth");
         var response = await axios.get("https://neobow.appspot.com/techrequest",{
             params:{
                 tag:tag,
@@ -51,26 +52,6 @@ async function loop(tag, notemail,callback){
             complete = true;
         } 
     }
-    // async.parallel({
-    //     timer: function(callback){
-    //         await sleep(timeBeforeTimeout);
-    //         console.log("timeout completed");
-    //         timeout=true;
-    //     },
-    //     whileloop : function(callback){
-    //         while(!complete&&!timeout){
-    //                 var response = await axios.get("https://neobow.appspot.com/techrequest",{
-    //                     params:{
-    //                         tag:tag,
-    //                         notemail: notemail
-    //                     }
-    //                 })
-    //                 console.log(response.data)
-    //                 console.log(response.data.success);
-    //                 if (response.data.success == true){
-    //                     complete = true;
-    //                 } 
-    //     }}});
     if(complete){
         callback(null,response.data)
     }else{

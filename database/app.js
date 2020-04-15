@@ -48,7 +48,7 @@ app.use('/', requestAgent);
 app.use('/', getAnonymous);
 
 
-app.get('/status', (req, res) => res.send('noice!'));
+app.get('/status', (req, res) => res.send('noice!!'));
 
 // Reset method just for our convenience
 app.get('/reset',
