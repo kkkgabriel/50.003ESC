@@ -5,8 +5,11 @@ var router = express.Router();
 const connection = require('../database');
 
 var tasksList = ["AccountsNBills","MobilePostpaid","MobilePrepaid","Broadband","TV","HomeLine","OnlinePurchase","Lifestyle"];
-var timeBeforeTimeout =5000;
 
+// set this number to very high, maybe 1h (3600000 ms)
+var timeBeforeTimeout =3600000;
+// time multiplier to roughly estimate time left in queue.
+var timemultiplier = 6;
 
 function isEmpty(obj) {
     for(var key in obj) {
@@ -56,6 +59,7 @@ async function loop(tag, notemail,callback){
         callback(null,response.data)
     }else{
         console.log("its a timeout");
+        callback(null,"no agent found.")
     }
     
 }
@@ -174,7 +178,51 @@ router.get('/requestAgent',(req,res)=>{
         res.json(resp);
     })
 })
+//removes all tasks from all queues, except those processing (only way to stop them is to timeout)
+router.get('/removeTasks',(req,res)=>{
+    AccountsNBillsq.remove((worker) =>{
+        return true;
+    })
+    MobilePostpaidq.remove((worker) =>{
+        return true;
+    })
+    MobilePrepaidq.remove((worker) =>{
+        return true;
+    })
+    Broadbandq.remove((worker) =>{
+        return true;
+    })
+    TVq.remove((worker) =>{
+        return true;
+    })
+    HomeLineq.remove((worker) =>{
+        return true;
+    })
+    OnlinePurchaseq.remove((worker) =>{
+        return true;
+    })
+    Lifestyleq.remove((worker) =>{
+        return true;
+    })
+    if(AccountsNBillsq.idle() && MobilePostpaidq.idle() && MobilePrepaidq.idle() && Broadbandq.idle() && TVq.idle() && HomeLineq.idle() && OnlinePurchaseq.idle() && Lifestyleq.idle()){
+        res.send("all cleared")
+    }
+    else{
+        res.send("still has tasks being executed, but none left in queue.")
+    }
+})
 
+// gets the queue position and estimated time.
+router.get('/getQueue',(req,res)=>{
+    var tag = req.query.tag
+    var tagq = eval(tag+"q")
+    var queueposition = tagq.length()
+    var timeleft = queueposition * timemultiplier
+    res.json({
+        queueposition: queueposition,
+        timeleft: timeleft
+    })
+})
 //initialise queue with tags
 for(var i =0; i<tasksList.length;i++){
     q.push({name:tasksList[i]},function(err){
