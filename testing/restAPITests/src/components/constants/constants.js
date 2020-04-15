@@ -9,3 +9,5 @@ export const RESULT_PASS = "Pass";
 export const URL = "http://www.neobow.appspot.com";
 
 export const ERROR = "Error"
+
+export const PASSWORD="Longpassword!1";
