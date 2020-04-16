@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button'
 // try to use react-bootstrap
 const Toolbar = (props) => {
     return (
-        <Navbar bg="dark" variant="dark" expand="lg">
+        <Navbar bg="dark" variant="dark" expand="sm">
         <Navbar.Brand href="#home">{props.displayName}</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
