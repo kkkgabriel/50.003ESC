@@ -2,6 +2,14 @@ const express = require('express');
 var router = express.Router();
 const connection = require('../database');
 
+let timeToReturn = 5000;	// 5s
+
+async function wait(ms) {
+    return new Promise(resolve => {
+      setTimeout(resolve, ms);
+    });
+}
+
 router.get(
 	'/techrequest',
 	function(req, res, next) {
@@ -21,6 +29,7 @@ router.get(
 				
 				if (results.length == 1){
 					rainbowid = results[0].rainbowid;
+
 					connection.query(
 						"UPDATE techentries SET `status`='not available' where `rainbowid`=?", rainbowid,
 
@@ -49,7 +58,10 @@ router.get(
 					errorMsg = "No available agent at the moment";
 					errorId = 3;
 				}
-				res.json({agentId: rainbowid, success:success, errorId: errorId, errorMsg: errorMsg});
+				(async () => {
+			        await wait(timeToReturn)
+					res.json({agentId: rainbowid, success:success, errorId: errorId, errorMsg: errorMsg});
+			    })()
 			}
 		);
 	}

@@ -1,7 +1,7 @@
 import React from 'react';
-import * as api from './apiPaths';
-import * as c from './constants';
-import * as key from './keys';
+import * as api from '../constants/apiPaths';
+import * as c from '../constants/constants';
+import * as key from '../constants/keys';
 
 class EndAgentCall extends React.Component {
 	constructor (props){

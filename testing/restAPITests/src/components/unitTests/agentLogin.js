@@ -1,20 +1,22 @@
 import React from 'react';
-import * as api from './apiPaths';
-import * as c from './constants';
-import * as key from './keys';
+import * as api from '../constants/apiPaths';
+import * as c from '../constants/constants';
+import * as key from '../constants/keys';
 
-class LoginTest extends React.Component {
+class AgentLogin extends React.Component {
 	constructor (props){
 		super(props);
+
+		// Some, not all  of the validuser accounts
 		this.validUserIds = [
-			"AccountsNBills@gmail.com",
-			"MobilePostpaid@gmail.com",
-			"MobilePrepaid@gmail.com",
-			"Broadband@gmail.com",
-			"TV@gmail.com",
-			"HomeLine@gmail.com",
-			"OnlinePurchase@gmail.com",
-			"Lifestyle@gmail.com"
+			"AccountsNBills8@gmail.com",
+			"MobilePostpaid8@gmail.com",
+			"MobilePrepaid8@gmail.com",
+			"Broadband8@gmail.com",
+			"TV8@gmail.com",
+			"HomeLine8@gmail.com",
+			"OnlinePurchase8@gmail.com",
+			"Lifestyle8@gmail.com"
 		];
 		this.invalidUserIds = [
 			"potato@gmail.com",
@@ -36,7 +38,7 @@ class LoginTest extends React.Component {
 	}
 
 	componentDidMount(){
-		// console.log("Logintest mounted");
+		console.log("Logintest mounted");
 		this.startTests();
 	}
 
@@ -46,6 +48,8 @@ class LoginTest extends React.Component {
 			progress: c.PROGRESS_IN_PROG,
 			testNotPassed: n
 		});
+
+		console.log("starting")
 
 		// This test ensures that we are not able to
 		// log in with invalid user ids
@@ -62,31 +66,36 @@ class LoginTest extends React.Component {
 		let i = 0;
 		while ( i < invalidUserIds.length ){
 			let invalidUserId = invalidUserIds[i];
-			let url = api.agentlogin +"?"+key.USERID+"=" +invalidUserId;
+
+			// set the url
+			let url = api.agentlogin +"?"+key.EMAIL+"=" +invalidUserId+"&"+key.PASSWORD+"="+c.PASSWORD;
 			setTimeout(()=>{
 				fetch(url)
-				.then(res => res.json())
-				.then(
-					(result) => {
-						if (result.affectedRows != 0){
-							let msg = "Failed: Invalid login affected more than 0 rows.";
+				.then(res =>{
+					res.json().then((data)=>{
+						console.log(data);
+
+						// if valid user is able to login, set result to failed and add error msg
+						if (data.status.success){
 							this.setState({
 								result: c.RESULT_FAILED,
-								errors: this.state.errors + msg
+								errors: this.state.errors+data.status.error.errorMsg
 							});
 						}
+
+						// minus one from testNotPassed
 						let testNotPassed = this.state.testNotPassed - 1;
 						this.setState({
 							testNotPassed: testNotPassed,
+
+							// Progress will be set as "completed" if all tested are done, and "in progress" if not all are done
 							progress: testNotPassed == 0 ? c.PROGRESS_COMPLETED : c.PROGRESS_IN_PROG,
+
+							// idk how to explain this, abit complicated
 							result: testNotPassed == 0 && this.state.result == c.RESULT_NA ? c.RESULT_PASS : this.state.result
 						});
-						
-					},
-			     	(error) => {
-						console.log(error)
-					}
-				)
+					})
+				})
 			}, 500);
 
 			i++;
@@ -99,31 +108,41 @@ class LoginTest extends React.Component {
 		let i = 0;
 		while ( i < validUserIds.length ){
 			let validUserId = validUserIds[i];
-			let url = api.agentlogin +"?"+key.USERID+"=" +validUserId;
+
+			// set the url
+			let url = api.agentlogin +"?"+key.EMAIL+"=" +validUserId+"&"+key.PASSWORD+"="+c.PASSWORD;
+			// console.log("This is url: "+url);
+
 			setTimeout(()=>{
+
+				// make the call
 				fetch(url)
-				.then(res => res.json())
-				.then(
-					(result) => {
-						if (result.affectedRows != 1){
-							let msg = "Failed: Valid Login affect not 1 row.";
+				.then(res =>{
+					res.json().then((data)=>{
+						console.log(data);
+
+						// if valid user is unable to login, set result to failed and add error msg
+						if (!data.status.success){
 							this.setState({
 								result: c.RESULT_FAILED,
-								errors: this.state.errors + msg
+								errors: this.state.errors+data.status.error.errorMsg
 							});
 						}
+
+						// minus one from testNotPassed
 						let testNotPassed = this.state.testNotPassed - 1;
+
 						this.setState({
 							testNotPassed: testNotPassed,
+
+							// Progress will be set as "completed" if all tested are done, and "in progress" if not all are done 
 							progress: testNotPassed == 0 ? c.PROGRESS_COMPLETED : c.PROGRESS_IN_PROG,
+
+							// idk how to explain this, abit complicated
 							result: testNotPassed == 0 && this.state.result == c.RESULT_NA ? c.RESULT_PASS : this.state.result
 						});
-						
-					},
-			     	(error) => {
-						console.log(error)
-					}
-				)
+					})
+				})
 			}, 500);
 
 			i++;
@@ -142,4 +161,4 @@ class LoginTest extends React.Component {
 	}
 }
 
-export default LoginTest;
+export default AgentLogin;

@@ -1,11 +1,11 @@
 import React from 'react';
-import LoginTest from './logintest.js';
-import TechRequestTest from './techrequesttest.js';
-import GetGuestAccountTest from './getguestaccounttest.js';
-import EndUserCallTest from './endusercalltest.js';
-import GetAnotherAgentTest from './getanotheragenttest.js';
-import GetDiffTagTest from './getdifftagtest.js';
-import EndAgentCall from './endagentcall.js';
+import AgentLogin from './unitTests/agentLogin.js';
+// import TechRequestTest from './unitTests/techrequesttest.js';
+// import GetGuestAccountTest from './unitTests/getguestaccounttest.js';
+// import EndUserCallTest from './unitTests/endusercalltest.js';
+// import GetAnotherAgentTest from './unitTests/getanotheragenttest.js';
+// import GetDiffTagTest from './unitTests/getdifftagtest.js';
+// import EndAgentCall from './unitTests/endagentcall.js';
 require('bootstrap');
 
 class Testcases extends React.Component {
@@ -26,12 +26,9 @@ class Testcases extends React.Component {
 					    </tr>
 					</thead>
 					<tbody>
-						<GetAnotherAgentTest />
-						<EndUserCallTest />
-						<GetGuestAccountTest />
-						<LoginTest />
-						<TechRequestTest />
-						<GetDiffTagTest />
+						<tr><td></td><td></td><td></td><td></td></tr>
+						<AgentLogin/>
+						<tr><td></td><td></td><td></td><td></td></tr>
 					</tbody>
 				</table>
 			</div>
@@ -44,4 +41,9 @@ export default Testcases;
 						
 
 						// donent
-						// <EndAgentCall />
+						// <GetAnotherAgentTest />
+						// <EndUserCallTest />
+						// <GetGuestAccountTest />
+						// <LoginTest />
+						// <TechRequestTest />
+						// <GetDiffTagTest />
