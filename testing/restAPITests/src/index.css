@@ -13,10 +13,18 @@ code {
 }
 
 .data{
-	/*overflow: scroll;*/
-	height: 100px;
+	overflow: scroll;
+	height: 120px;
 }
 
-th {
-  width:25%;
+.th-bg{
+  width: 40%;
+}
+
+.th-sm{
+  width: 15%;
+}
+
+.align-left{
+  text-align:left;
 }
