@@ -8,7 +8,7 @@ router.get(
 		let rainbowid = req.query.rainbowid;
 		let availability = req.query.availability;
 		connection.query(
-			"UPDATE techentries SET status=? WHERE `rainbowid` = ?;", [availability,rainbowid],
+			"UPDATE techentries SET status=? WHERE `rainbowid` = ? and `loggedin`=1;", [availability,rainbowid],
 			function(error, results, fields) {
 				if (error) throw error;
 				let status = {

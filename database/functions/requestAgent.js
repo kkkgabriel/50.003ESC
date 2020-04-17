@@ -132,10 +132,21 @@ router.get('/requestAgent',(req,res)=>{
     if (req.query.notemail != null){
         notemail = req.query.notemail;        
     }
-    var tagq = eval(tag+"q");
-    tagq.push({name:req.query.name, notemail: notemail}, function(err,resp){
-        res.json(resp);
-    })
+    try {
+        var tagq = eval(tag+"q");
+        tagq.push({name:req.query.name, notemail: notemail}, function(err,resp){
+            res.json(resp);
+        })
+    } catch (e) {
+        if (e instanceof ReferenceError) {
+            res.json({
+                success: false,
+                errorId: 4,
+                errorMsg: "Invalid tag"
+            });
+        }
+    }
+    
 })
 
 //removes all tasks from all queues, except those processing (only way to stop them is to timeout)
