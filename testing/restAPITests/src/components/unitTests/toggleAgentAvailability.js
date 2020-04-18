@@ -80,39 +80,38 @@ class ToggleAgentAvailability extends React.Component {
 
 			// set the url
 			let url = api.toggleagentavailability +"?"+key.RAINBOWID+"=" +invalidUserId;
-			setTimeout(()=>{
-				fetch(url)
-				.then(res =>{
-					res.json().then((data)=>{
-						console.log(data);
 
-						// if invalid user is able to toggle availability, set result to failed and add error msg
-						if (data.status.success){
-							this.setState({
-								result: c.RESULT_FAILED,
-								errors: this.state.errors+data.status.error.errorMsg
-							});
+			fetch(url)
+			.then(res =>{
+				res.json().then((data)=>{
+					console.log(data);
 
-							// add id 1 to failedTests
-							if (!this.state.failedTests.includes("1\n")){
-								this.state.failedTests.push("1\n")
-							}
-						}
-
-						// minus one from testNotPassed
-						let testNotPassed = this.state.testNotPassed - 1;
+					// if invalid user is able to toggle availability, set result to failed and add error msg
+					if (data.status.success){
 						this.setState({
-							testNotPassed: testNotPassed,
-
-							// Progress will be set as "completed" if all tested are done, and "in progress" if not all are done
-							progress: testNotPassed == 0 ? c.PROGRESS_COMPLETED : c.PROGRESS_IN_PROG,
-
-							// idk how to explain this, abit complicated
-							result: testNotPassed == 0 && this.state.result == c.RESULT_NA ? c.RESULT_PASS : this.state.result
+							result: c.RESULT_FAILED,
+							errors: this.state.errors+data.status.error.errorMsg
 						});
-					})
+
+						// add id 1 to failedTests
+						if (!this.state.failedTests.includes("1\n")){
+							this.state.failedTests.push("1\n")
+						}
+					}
+
+					// minus one from testNotPassed
+					let testNotPassed = this.state.testNotPassed - 1;
+					this.setState({
+						testNotPassed: testNotPassed,
+
+						// Progress will be set as "completed" if all tested are done, and "in progress" if not all are done
+						progress: testNotPassed == 0 ? c.PROGRESS_COMPLETED : c.PROGRESS_IN_PROG,
+
+						// idk how to explain this, abit complicated
+						result: testNotPassed == 0 && this.state.result == c.RESULT_NA ? c.RESULT_PASS : this.state.result
+					});
 				})
-			}, 500);
+			})
 
 			i++;
 		}
@@ -129,42 +128,39 @@ class ToggleAgentAvailability extends React.Component {
 			let url = api.toggleagentavailability +"?"+key.RAINBOWID+"=" +validUserId;
 			// console.log("This is url: "+url);
 
-			setTimeout(()=>{
+			// make the call
+			fetch(url)
+			.then(res =>{
+				res.json().then((data)=>{
+					console.log(data);
 
-				// make the call
-				fetch(url)
-				.then(res =>{
-					res.json().then((data)=>{
-						console.log(data);
-
-						// if valid user is unable to toggle availabilityt, set result to failed and add error msg
-						if (!data.status.success){
-							this.setState({
-								result: c.RESULT_FAILED,
-								errors: this.state.errors+data.status.error.errorMsg
-							});
-
-							// add id 2 to failedTests
-							if (!this.state.failedTests.includes("2\n")){
-								this.state.failedTests.push("2\n")
-							}
-						}
-
-						// minus one from testNotPassed
-						let testNotPassed = this.state.testNotPassed - 1;
-
+					// if valid user is unable to toggle availabilityt, set result to failed and add error msg
+					if (!data.status.success){
 						this.setState({
-							testNotPassed: testNotPassed,
-
-							// Progress will be set as "completed" if all tested are done, and "in progress" if not all are done 
-							progress: testNotPassed == 0 ? c.PROGRESS_COMPLETED : c.PROGRESS_IN_PROG,
-
-							// idk how to explain this, abit complicated
-							result: testNotPassed == 0 && this.state.result == c.RESULT_NA ? c.RESULT_PASS : this.state.result
+							result: c.RESULT_FAILED,
+							errors: this.state.errors+data.status.error.errorMsg
 						});
-					})
+
+						// add id 2 to failedTests
+						if (!this.state.failedTests.includes("2\n")){
+							this.state.failedTests.push("2\n")
+						}
+					}
+
+					// minus one from testNotPassed
+					let testNotPassed = this.state.testNotPassed - 1;
+
+					this.setState({
+						testNotPassed: testNotPassed,
+
+						// Progress will be set as "completed" if all tested are done, and "in progress" if not all are done 
+						progress: testNotPassed == 0 ? c.PROGRESS_COMPLETED : c.PROGRESS_IN_PROG,
+
+						// idk how to explain this, abit complicated
+						result: testNotPassed == 0 && this.state.result == c.RESULT_NA ? c.RESULT_PASS : this.state.result
+					});
 				})
-			}, 500);
+			})
 
 			i++;
 		}
@@ -181,42 +177,39 @@ class ToggleAgentAvailability extends React.Component {
 			let url = api.toggleagentavailability +"?"+key.RAINBOWID+"=" +rainbowId;
 			// console.log("This is url: "+url);
 
-			setTimeout(()=>{
+			// make the call
+			fetch(url)
+			.then(res =>{
+				res.json().then((data)=>{
+					console.log(data);
 
-				// make the call
-				fetch(url)
-				.then(res =>{
-					res.json().then((data)=>{
-						console.log(data);
-
-						// if not loggedin user is able to toggle availability, set result to failed and add error msg
-						if (data.status.success){
-							this.setState({
-								result: c.RESULT_FAILED,
-								errors: this.state.errors+data.status.error.errorMsg
-							});
-
-							// add id 3 to failedTests
-							if (!this.state.failedTests.includes("3\n")){
-								this.state.failedTests.push("3\n")
-							}
-						}
-
-						// minus one from testNotPassed
-						let testNotPassed = this.state.testNotPassed - 1;
-
+					// if not loggedin user is able to toggle availability, set result to failed and add error msg
+					if (data.status.success){
 						this.setState({
-							testNotPassed: testNotPassed,
-
-							// Progress will be set as "completed" if all tested are done, and "in progress" if not all are done 
-							progress: testNotPassed == 0 ? c.PROGRESS_COMPLETED : c.PROGRESS_IN_PROG,
-
-							// idk how to explain this, abit complicated
-							result: testNotPassed == 0 && this.state.result == c.RESULT_NA ? c.RESULT_PASS : this.state.result
+							result: c.RESULT_FAILED,
+							errors: this.state.errors+data.status.error.errorMsg
 						});
-					})
+
+						// add id 3 to failedTests
+						if (!this.state.failedTests.includes("3\n")){
+							this.state.failedTests.push("3\n")
+						}
+					}
+
+					// minus one from testNotPassed
+					let testNotPassed = this.state.testNotPassed - 1;
+
+					this.setState({
+						testNotPassed: testNotPassed,
+
+						// Progress will be set as "completed" if all tested are done, and "in progress" if not all are done 
+						progress: testNotPassed == 0 ? c.PROGRESS_COMPLETED : c.PROGRESS_IN_PROG,
+
+						// idk how to explain this, abit complicated
+						result: testNotPassed == 0 && this.state.result == c.RESULT_NA ? c.RESULT_PASS : this.state.result
+					});
 				})
-			}, 500);
+			})
 
 			i++;
 		}		
@@ -234,7 +227,7 @@ class ToggleAgentAvailability extends React.Component {
 				<td>
 					{this.state.progress}<br/><br/>
 					{this.state.progress == c.PROGRESS_NOT_DONE &&
-						<button type="button" onClick={this.startTests} class="btn btn-info">Start</button>
+						<button type="button" ref={this.props.myRef} onClick={this.startTests} class="btn btn-info">Start</button>
 					}
 				</td>
 				<td>{this.state.result}</td>

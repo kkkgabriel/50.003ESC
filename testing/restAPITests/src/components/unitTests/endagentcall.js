@@ -3,7 +3,7 @@ import * as api from '../constants/apiPaths';
 import * as c from '../constants/constants';
 import * as key from '../constants/keys';
 
-class endAgentCall extends React.Component {
+class EndAgentCall extends React.Component {
 	constructor (props){
 		super(props);
 
@@ -67,39 +67,37 @@ class endAgentCall extends React.Component {
 			let url = api.endagentcall +"?"+key.RAINBOWID+"=" +validRainbowId;
 
 			// console.log(url);
-			setTimeout(()=>{
-				fetch(url)
-				.then(res =>{
-					res.json().then((data)=>{
-						console.log(data);
+			fetch(url)
+			.then(res =>{
+				res.json().then((data)=>{
+					console.log(data);
 
-						// if valid agent is unable to end call, set result to failed and add error msg
-						if (!data.status.success){
-							this.setState({
-								result: c.RESULT_FAILED,
-								errors: this.state.errors+data.status.error.errorMsg+"\n"
-							});
-
-							// add id 1 to failedTests
-							if (!this.state.failedTests.includes("1\n")){
-								this.state.failedTests.push("1\n")
-							}
-						}
-
-						// minus one from testNotPassed
-						let testNotPassed = this.state.testNotPassed - 1;
+					// if valid agent is unable to end call, set result to failed and add error msg
+					if (!data.status.success){
 						this.setState({
-							testNotPassed: testNotPassed,
-
-							// Progress will be set as "completed" if all tested are done, and "in progress" if not all are done
-							progress: testNotPassed == 0 ? c.PROGRESS_COMPLETED : c.PROGRESS_IN_PROG,
-
-							// idk how to explain this, abit complicated
-							result: testNotPassed == 0 && this.state.result == c.RESULT_NA ? c.RESULT_PASS : this.state.result
+							result: c.RESULT_FAILED,
+							errors: this.state.errors+data.status.error.errorMsg+"\n"
 						});
-					})
+
+						// add id 1 to failedTests
+						if (!this.state.failedTests.includes("1\n")){
+							this.state.failedTests.push("1\n")
+						}
+					}
+
+					// minus one from testNotPassed
+					let testNotPassed = this.state.testNotPassed - 1;
+					this.setState({
+						testNotPassed: testNotPassed,
+
+						// Progress will be set as "completed" if all tested are done, and "in progress" if not all are done
+						progress: testNotPassed == 0 ? c.PROGRESS_COMPLETED : c.PROGRESS_IN_PROG,
+
+						// idk how to explain this, abit complicated
+						result: testNotPassed == 0 && this.state.result == c.RESULT_NA ? c.RESULT_PASS : this.state.result
+					});
 				})
-			}, 500);
+			})
 
 			i++;
 		}
@@ -115,39 +113,37 @@ class endAgentCall extends React.Component {
 			let url = api.endagentcall +"?"+key.RAINBOWID+"=" +invalidRainbowIds;
 
 			// console.log(url);
-			setTimeout(()=>{
-				fetch(url)
-				.then(res =>{
-					res.json().then((data)=>{
-						console.log(data);
+			fetch(url)
+			.then(res =>{
+				res.json().then((data)=>{
+					console.log(data);
 
-						// if invalid agent is able to end call, set result to failed and add error msg
-						if (data.status.success){
-							this.setState({
-								result: c.RESULT_FAILED,
-								errors: this.state.errors+data.status.error.errorMsg+"\n"
-
-							});
-							// add id 2 to failedTests
-							if (!this.state.failedTests.includes("2\n")){
-								this.state.failedTests.push("2\n")
-							}
-						}
-
-						// minus one from testNotPassed
-						let testNotPassed = this.state.testNotPassed - 1;
+					// if invalid agent is able to end call, set result to failed and add error msg
+					if (data.status.success){
 						this.setState({
-							testNotPassed: testNotPassed,
+							result: c.RESULT_FAILED,
+							errors: this.state.errors+data.status.error.errorMsg+"\n"
 
-							// Progress will be set as "completed" if all tested are done, and "in progress" if not all are done
-							progress: testNotPassed == 0 ? c.PROGRESS_COMPLETED : c.PROGRESS_IN_PROG,
-
-							// idk how to explain this, abit complicated
-							result: testNotPassed == 0 && this.state.result == c.RESULT_NA ? c.RESULT_PASS : this.state.result
 						});
-					})
+						// add id 2 to failedTests
+						if (!this.state.failedTests.includes("2\n")){
+							this.state.failedTests.push("2\n")
+						}
+					}
+
+					// minus one from testNotPassed
+					let testNotPassed = this.state.testNotPassed - 1;
+					this.setState({
+						testNotPassed: testNotPassed,
+
+						// Progress will be set as "completed" if all tested are done, and "in progress" if not all are done
+						progress: testNotPassed == 0 ? c.PROGRESS_COMPLETED : c.PROGRESS_IN_PROG,
+
+						// idk how to explain this, abit complicated
+						result: testNotPassed == 0 && this.state.result == c.RESULT_NA ? c.RESULT_PASS : this.state.result
+					});
 				})
-			}, 500);
+			})
 
 			i++;
 		}
@@ -164,7 +160,7 @@ class endAgentCall extends React.Component {
 				<td>
 					{this.state.progress}<br/><br/>
 					{this.state.progress == c.PROGRESS_NOT_DONE &&
-						<button type="button" onClick={this.startTests} class="btn btn-info">Start</button>
+						<button type="button" ref={this.props.myRef} onClick={this.startTests} class="btn btn-info">Start</button>
 					}
 				</td>
 				<td>{this.state.result}</td>
@@ -175,4 +171,4 @@ class endAgentCall extends React.Component {
 	}
 }
 
-export default endAgentCall;
+export default EndAgentCall;

@@ -1,10 +1,15 @@
 import React from 'react';
+
+// unit tests
 import AgentLogin from './unitTests/agentLogin.js';
 import EndAgentCall from './unitTests/endAgentCall.js';
 import AgentSignout from './unitTests/agentSignout.js';
 import ToggleAgentAvailability from './unitTests/toggleAgentAvailability.js';
 import RequestAgent from './unitTests/requestAgent.js';
 import GetAnonymous from './unitTests/getAnonymous.js';
+
+// system tests
+import QueueSystem from './systemTests/queueSystem.js';
 
 
 require('bootstrap');
@@ -13,9 +18,28 @@ class Testcases extends React.Component {
 	constructor (props){
 		super(props);
 
-		this.state = {
-			title: "Unit Tests"
+		this.unitTestsRefs =  {
+			agentLoginRef: React.createRef(),
+			agentSignoutRef: React.createRef(),
+			endAgentCallRef: React.createRef(),
+			getAnonymousRef: React.createRef(),
+			requestAgentRef: React.createRef(),
+			toggleAgentAvailabilityRef: React.createRef()
 		}
+
+		this.systemTestsRefs = {
+			queueSystemRef: React.createRef()
+		}
+
+		this.state = {
+			title: "System Tests"
+		}
+	}
+
+	componentDidMount(){
+		console.log("component did mount");
+		console.log(this.unitTestsRefs);
+		// this.unitTestsRefs.agentLoginRef.current.click();
 	}
 
 	changePage =()=>{
@@ -24,9 +48,45 @@ class Testcases extends React.Component {
 		});
 	}
 
-	startAllTests =()=>{
-		// AgentLogin.startTests();
+	autoTest =()=>{	
+		if (this.state.title == "Unit Tests") {
+			this.startAllUnitTest();
+		} else if (this.state.title == "System Tests"){
+			this.startAllSystemTest();
+		}
 	}
+
+	startAllSystemTest =()=>{
+		this.systemTestsRefs.queueSystemRef.current.click();
+	}
+
+	startAllUnitTest =()=>{
+		// This is a retarded way but I'll just leave this as it is first lol
+		let shortTimeout = 2000;
+		let longTimeout = 3000;
+		this.unitTestsRefs.agentLoginRef.current.click();	
+		(async () => {
+			await wait(shortTimeout);
+			this.unitTestsRefs.toggleAgentAvailabilityRef.current.click();
+			(async () => {
+				await wait(shortTimeout);
+				this.unitTestsRefs.endAgentCallRef.current.click();	
+				(async () => {
+					await wait(shortTimeout);
+					this.unitTestsRefs.agentSignoutRef.current.click();	
+					(async () => {
+						await wait(longTimeout);
+						this.unitTestsRefs.requestAgentRef.current.click();	
+						(async () => {
+							await wait(shortTimeout);
+							this.unitTestsRefs.getAnonymousRef.current.click();	
+						})()
+					})()
+				})()
+			})()
+		})()
+	}
+
 
 	render () {
 		return (
@@ -41,7 +101,7 @@ class Testcases extends React.Component {
 								}
 							</div>
 							<div class="col-sm">
-								<button type="button" onClick={this.startAllTests} class="btn btn-info">Start All</button> 					
+								<button type="button" onClick={this.autoTest} class="btn btn-info">Start All</button> 					
 							</div>
 							<div class="col-sm">
 								{this.state.title=="Unit Tests" &&
@@ -61,18 +121,31 @@ class Testcases extends React.Component {
 							<th className="th-sm" scope="col">Errors</th>
 					    </tr>
 					</thead>
-					<tbody>
-						<AgentLogin/>
-						<ToggleAgentAvailability/>
-						<EndAgentCall/>
-						<AgentSignout/>
-						<RequestAgent/>
-						<GetAnonymous/>
-					</tbody>
+					{this.state.title=="Unit Tests" &&
+						<tbody>
+							<AgentLogin myRef={this.unitTestsRefs.agentLoginRef} />
+							<ToggleAgentAvailability myRef={this.unitTestsRefs.toggleAgentAvailabilityRef}/>
+							<EndAgentCall myRef={this.unitTestsRefs.endAgentCallRef}/>
+							<AgentSignout myRef={this.unitTestsRefs.agentSignoutRef}/>
+							<RequestAgent myRef={this.unitTestsRefs.requestAgentRef}/>
+							<GetAnonymous myRef={this.unitTestsRefs.getAnonymousRef}/>
+						</tbody>
+					}
+					{this.state.title=="System Tests" &&
+						<tbody>
+							<QueueSystem myRef={this.systemTestsRefs.queueSystemRef}/>
+						</tbody>
+					}
 				</table>
 			</div>
 		)
 	}
+}
+
+async function wait(ms) {
+	return new Promise(resolve => {
+		setTimeout(resolve, ms);
+	});
 }
 
 export default Testcases;

@@ -69,40 +69,39 @@ class AgentLogin extends React.Component {
 
 			// set the url
 			let url = api.agentlogin +"?"+key.EMAIL+"=" +invalidUserId+"&"+key.PASSWORD+"="+c.PASSWORD;
-			setTimeout(()=>{
-				fetch(url)
-				.then(res =>{
-					res.json().then((data)=>{
-						console.log(data);
+			
+			fetch(url)
+			.then(res =>{
+				res.json().then((data)=>{
+					console.log(data);
 
-						// if valid user is able to login, set result to failed and add error msg
-						if (data.status.success){
-							let msg = "Invalid user loggedin successfully.\n"
-							this.setState({
-								result: c.RESULT_FAILED,
-								errors: this.state.errors+msg
-							});
-
-							// add id 1 to failedTests
-							if (!this.state.failedTests.includes("1\n")){
-								this.state.failedTests.push("1\n")
-							}
-						}
-
-						// minus one from testNotPassed
-						let testNotPassed = this.state.testNotPassed - 1;
+					// if valid user is able to login, set result to failed and add error msg
+					if (data.status.success){
+						let msg = "Invalid user loggedin successfully.\n"
 						this.setState({
-							testNotPassed: testNotPassed,
-
-							// Progress will be set as "completed" if all tested are done, and "in progress" if not all are done
-							progress: testNotPassed == 0 ? c.PROGRESS_COMPLETED : c.PROGRESS_IN_PROG,
-
-							// idk how to explain this, abit complicated
-							result: testNotPassed == 0 && this.state.result == c.RESULT_NA ? c.RESULT_PASS : this.state.result
+							result: c.RESULT_FAILED,
+							errors: this.state.errors+msg
 						});
-					})
+
+						// add id 1 to failedTests
+						if (!this.state.failedTests.includes("1\n")){
+							this.state.failedTests.push("1\n")
+						}
+					}
+
+					// minus one from testNotPassed
+					let testNotPassed = this.state.testNotPassed - 1;
+					this.setState({
+						testNotPassed: testNotPassed,
+
+						// Progress will be set as "completed" if all tested are done, and "in progress" if not all are done
+						progress: testNotPassed == 0 ? c.PROGRESS_COMPLETED : c.PROGRESS_IN_PROG,
+
+						// idk how to explain this, abit complicated
+						result: testNotPassed == 0 && this.state.result == c.RESULT_NA ? c.RESULT_PASS : this.state.result
+					});
 				})
-			}, 500);
+			})
 
 			i++;
 		}
@@ -171,7 +170,7 @@ class AgentLogin extends React.Component {
 				<td>
 					{this.state.progress}<br/><br/>
 					{this.state.progress == c.PROGRESS_NOT_DONE &&
-						<button type="button" onClick={this.startTests} class="btn btn-info">Start</button>
+						<button type="button" ref={this.props.myRef} onClick={this.startTests} class="btn btn-info">Start</button>
 					}
 				</td>
 				<td>{this.state.result}</td>

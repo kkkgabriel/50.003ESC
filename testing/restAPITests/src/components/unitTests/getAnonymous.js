@@ -42,37 +42,35 @@ class GetAnonymous extends React.Component {
 		let url = api.getanonymous;
 		let i = 0;
 		while ( i<this.numberOfTries){
-			setTimeout(()=>{
-				fetch(url)
-				.then(res=>{
-					res.json().then(data=>{
+			fetch(url)
+			.then(res=>{
+				res.json().then(data=>{
 
-						if (!data.status.success){
-							let msg = "Unable to get user credentials.\n"
-							this.setState({
-								result: c.RESULT_FAILED,
-								errors: this.state.errors+msg
-							});
-
-							// add id 1 to failedTests
-							if (!this.state.failedTests.includes("1\n")){
-								this.state.failedTests.push("1\n")
-							}
-						}
-						// minus one from testNotPassed
-						let testNotPassed = this.state.testNotPassed - 1;
+					if (!data.status.success){
+						let msg = "Unable to get user credentials.\n"
 						this.setState({
-							testNotPassed: testNotPassed,
-
-							// Progress will be set as "completed" if all tested are done, and "in progress" if not all are done
-							progress: testNotPassed == 0 ? c.PROGRESS_COMPLETED : c.PROGRESS_IN_PROG,
-
-							// idk how to explain this, abit complicated
-							result: testNotPassed == 0 && this.state.result == c.RESULT_NA ? c.RESULT_PASS : this.state.result
+							result: c.RESULT_FAILED,
+							errors: this.state.errors+msg
 						});
-					})
+
+						// add id 1 to failedTests
+						if (!this.state.failedTests.includes("1\n")){
+							this.state.failedTests.push("1\n")
+						}
+					}
+					// minus one from testNotPassed
+					let testNotPassed = this.state.testNotPassed - 1;
+					this.setState({
+						testNotPassed: testNotPassed,
+
+						// Progress will be set as "completed" if all tested are done, and "in progress" if not all are done
+						progress: testNotPassed == 0 ? c.PROGRESS_COMPLETED : c.PROGRESS_IN_PROG,
+
+						// idk how to explain this, abit complicated
+						result: testNotPassed == 0 && this.state.result == c.RESULT_NA ? c.RESULT_PASS : this.state.result
+					});
 				})
-			}, 500);
+			})
 
 			i++;
 		}
@@ -90,7 +88,7 @@ class GetAnonymous extends React.Component {
 				<td>
 					{this.state.progress}<br/><br/>
 					{this.state.progress == c.PROGRESS_NOT_DONE &&
-						<button type="button" onClick={this.startTests} class="btn btn-info">Start</button>
+						<button type="button" ref={this.props.myRef} onClick={this.startTests} class="btn btn-info">Start</button>
 					}
 				</td>
 				<td>{this.state.result}</td>
