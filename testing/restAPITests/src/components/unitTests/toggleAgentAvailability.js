@@ -79,7 +79,7 @@ class ToggleAgentAvailability extends React.Component {
 			let invalidUserId = invalidUserIds[i];
 
 			// set the url
-			let url = api.toggleagentavailability +"?"+key.RAINBOWID+"=" +invalidUserId;
+			let url = api.toggleagentavailability +"?"+key.RAINBOWID+"=" +invalidUserId+"&availability=available";
 
 			fetch(url)
 			.then(res =>{
@@ -125,7 +125,7 @@ class ToggleAgentAvailability extends React.Component {
 			let validUserId = validUserIds[i];
 
 			// set the url
-			let url = api.toggleagentavailability +"?"+key.RAINBOWID+"=" +validUserId;
+			let url = api.toggleagentavailability +"?"+key.RAINBOWID+"=" +validUserId+"&availability=available";
 			// console.log("This is url: "+url);
 
 			// make the call
