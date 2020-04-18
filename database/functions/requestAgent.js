@@ -187,7 +187,14 @@ router.get('/removeTasks',(req,res)=>{
 router.get('/getQueue',(req,res)=>{
     var tag = req.query.tag
     var tagq = eval(tag+"q")
-    var queueposition = tagq.length()
+    var queueposition = 999;
+    var items = [...tagq];
+    for (let index = 0; index < tagq.length(); index++) {
+        if(items[index].name == req.query.name){
+            queueposition = index;
+        }
+        
+    }
     var timeleft = queueposition * timemultiplier
     res.json({
         queueposition: queueposition,
