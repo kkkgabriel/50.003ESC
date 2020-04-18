@@ -163,9 +163,9 @@ class AgentLogin extends React.Component {
 		return (
 			<tr>
 				<td className="align-left">
-					Login method<br/><br/>
-					Test 1: Logging in with invalid agent credentials<br/>
-					Test 2: Logging in with valid agent credentials
+					<b>Login method</b><br/><br/>
+					<b>Test 1</b>: Logging in with invalid agent credentials<br/>
+					<b>Test 2</b>: Logging in with valid agent credentials
 				</td>
 				<td>
 					{this.state.progress}<br/><br/>

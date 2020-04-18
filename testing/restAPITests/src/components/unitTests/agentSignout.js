@@ -219,10 +219,10 @@ class AgentSignout extends React.Component {
 		return (
 			<tr>
 				<td className="align-left">
-					Agent Signout test<br/><br/>
-					Test 1: Signing out with invalid rainbow IDs.<br/>
-					Test 2: Signing out with valid rainbow IDs which are already signed in.<br/>
-					Test 3: Signing out with valid rainbow IDs which are not already signed in.
+					<b>Agent Signout test</b><br/><br/>
+					<b>Test 1</b>: Signing out with invalid rainbow IDs.<br/>
+					<b>Test 2</b>: Signing out with valid rainbow IDs which are already signed in.<br/>
+					<b>Test 3</b>: Signing out with valid rainbow IDs which are not already signed in.
 					
 				</td>
 				<td>

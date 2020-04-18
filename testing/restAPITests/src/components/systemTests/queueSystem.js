@@ -251,8 +251,8 @@ class QueueSystem extends React.Component {
 				<td className="align-left">
 					<b>Queue system</b><br/><br/>
 					<b>Test 1: </b> 
-					8 agent of the same tag will log in, then toggle availability.
-					8 agent requsts will be made. The requests will be responded to one by one.
+					8 agent of the same tag will log in, then toggle their availability.
+					8 agent requests will be made. The requests should be responded to one by one.
 					The requests will be checked that they do not receive the same agent ID.
 					After which, the agents will end their calls. 
 					Then, another 8 requests will be made and have their responses checked.<br/>

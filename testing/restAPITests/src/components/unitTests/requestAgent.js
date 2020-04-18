@@ -169,9 +169,9 @@ class RequestAgent extends React.Component {
 		return (
 			<tr>
 				<td className="align-left">
-					Request agent method<br/><br/>
-					Test 1: Requesting with valid tag and an unwanted agent ID.<br/>
-					Test 2: Requesting with invalid tag. 
+					<b>Request agent method</b> <br/><br/>
+					<b>Test 1:</b>  Requesting with valid tag and an unwanted agent ID.<br/>
+					<b>Test 2:</b>  Requesting with invalid tag. 
 				</td>
 				<td>
 					{this.state.progress}<br/><br/>

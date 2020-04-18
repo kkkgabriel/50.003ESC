@@ -81,8 +81,8 @@ class GetAnonymous extends React.Component {
 		return (
 			<tr>
 				<td className="align-left">
-					Get Anonymous method<br/><br/>
-					Test 1: Uses the method to get an account with email and password.
+					<b>Get Anonymous method</b><br/><br/>
+					<b>Test 1:</b> Uses the method to get an account with email and password.
 					
 				</td>
 				<td>

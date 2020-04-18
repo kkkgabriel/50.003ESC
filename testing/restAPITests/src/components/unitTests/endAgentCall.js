@@ -153,9 +153,9 @@ class EndAgentCall extends React.Component {
 		return (
 			<tr>
 				<td className="align-left">
-					End Agent Call method<br/><br/>
-					Test 1: ends call with valid rainbow IDs and are not available<br/>
-					Test 2: ends call with invalid rainbow IDs.<br/>				
+					<b>End Agent Call method</b><br/><br/>
+					<b>Test 1</b>: ends call with valid rainbow IDs and are not available<br/>
+					<b>Test 2</b>: ends call with invalid rainbow IDs.<br/>				
 				</td>
 				<td>
 					{this.state.progress}<br/><br/>

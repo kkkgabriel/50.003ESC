@@ -79,7 +79,7 @@ class ToggleAgentAvailability extends React.Component {
 			let invalidUserId = invalidUserIds[i];
 
 			// set the url
-			let url = api.toggleagentavailability +"?"+key.RAINBOWID+"=" +invalidUserId+"&availability=available";
+			let url = api.toggleagentavailability +"?"+key.RAINBOWID+"=" +invalidUserId+"&availability=not available";
 
 			fetch(url)
 			.then(res =>{
@@ -125,7 +125,7 @@ class ToggleAgentAvailability extends React.Component {
 			let validUserId = validUserIds[i];
 
 			// set the url
-			let url = api.toggleagentavailability +"?"+key.RAINBOWID+"=" +validUserId+"&availability=available";
+			let url = api.toggleagentavailability +"?"+key.RAINBOWID+"=" +validUserId+"&availability=not available";
 			// console.log("This is url: "+url);
 
 			// make the call
@@ -219,10 +219,10 @@ class ToggleAgentAvailability extends React.Component {
 		return (
 			<tr>
 				<td className="align-left">
-					Toggle Agent Availability method<br/><br/>
-					Test 1:	Using the method with invalid rainbow IDs.<br/>
-					Test 2: Using the method with valid rainbow IDs and which are already logged in.<br/>
-					Test 3: Using the method with valid rainbow IDs but are not logged in.<br/>
+					<b>Toggle Agent Availability method</b> <br/><br/>
+					<b>Test 1:</b> 	Using the method with invalid rainbow IDs.<br/>
+					<b>Test 2:</b> Using the method with valid rainbow IDs and which are already logged in.<br/>
+					<b>Test 3:</b>  Using the method with valid rainbow IDs but are not logged in.<br/>
 				</td>
 				<td>
 					{this.state.progress}<br/><br/>

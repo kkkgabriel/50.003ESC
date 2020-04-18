@@ -32,7 +32,7 @@ class Testcases extends React.Component {
 		}
 
 		this.state = {
-			title: "System Tests"
+			title: "Unit Tests"
 		}
 	}
 
@@ -67,10 +67,10 @@ class Testcases extends React.Component {
 		this.unitTestsRefs.agentLoginRef.current.click();	
 		(async () => {
 			await wait(shortTimeout);
-			this.unitTestsRefs.toggleAgentAvailabilityRef.current.click();
+			this.unitTestsRefs.endAgentCallRef.current.click();	
 			(async () => {
 				await wait(shortTimeout);
-				this.unitTestsRefs.endAgentCallRef.current.click();	
+				this.unitTestsRefs.toggleAgentAvailabilityRef.current.click();
 				(async () => {
 					await wait(shortTimeout);
 					this.unitTestsRefs.agentSignoutRef.current.click();	
@@ -93,6 +93,7 @@ class Testcases extends React.Component {
 			<div>
 				<div>
 					<h1>{this.state.title}</h1>
+					<p>Suggestioon: Run the tests in sequence.</p>
 					<div class="container">
 						<div class="row">
 							<div class="col-sm">
@@ -124,8 +125,8 @@ class Testcases extends React.Component {
 					{this.state.title=="Unit Tests" &&
 						<tbody>
 							<AgentLogin myRef={this.unitTestsRefs.agentLoginRef} />
-							<ToggleAgentAvailability myRef={this.unitTestsRefs.toggleAgentAvailabilityRef}/>
 							<EndAgentCall myRef={this.unitTestsRefs.endAgentCallRef}/>
+							<ToggleAgentAvailability myRef={this.unitTestsRefs.toggleAgentAvailabilityRef}/>
 							<AgentSignout myRef={this.unitTestsRefs.agentSignoutRef}/>
 							<RequestAgent myRef={this.unitTestsRefs.requestAgentRef}/>
 							<GetAnonymous myRef={this.unitTestsRefs.getAnonymousRef}/>
