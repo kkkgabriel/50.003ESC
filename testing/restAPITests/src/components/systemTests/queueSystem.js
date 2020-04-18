@@ -19,6 +19,16 @@ class QueueSystem extends React.Component {
 			"5e8aba0f35c8367f99b9833a",	// broadband7
 			"5e8aba1335c8367f99b98343"	// broadband8
 		]
+		this.validUserIds = [
+			"Broadband@gmail.com",
+			"Broadband2@gmail.com",
+			"Broadband3@gmail.com",
+			"Broadband4@gmail.com",
+			"Broadband5@gmail.com",
+			"Broadband6@gmail.com",
+			"Broadband7@gmail.com",
+			"Broadband8@gmail.com"
+		];
 
 		this.availableAccounts = [];
 
@@ -69,98 +79,111 @@ class QueueSystem extends React.Component {
 
 	test1 =()=>{
 
-		// i will be the var to loop through all the names
-		let i =0;
+		// Log in all agents
+		Promise.all(this.logins())
+		.then(values=>{
+			console.log("logging in");
+			console.log(values)
 
-		// use resetfn to simulate login agents
-		// console.log("First login");
-		api.resetfn(1);
+			// toggle availability
+			Promise.all(this.toggleAgentAvailabilities())
+			.then(values=>{
+				console.log("Toggling availability")
+				console.log(values)
 
-		// Note: the reset promise has to be exactly after the 8th promise and before the 9th
-		// if the reset promise resolves before the 8th promise, there will be some promises that would not resolve as there are not enough agents
-		// if the reset promise is set to resolve after the 9th promise, the 9th promise will not resolve as there are not enough agents
-		// unfortunately it seems impossible to control the order of the async tasks, so this is the only way i to test the queue system
+				// request Agents
+				Promise.all(this.requestAgents())
+				.then(values=>{
+					console.log("request agents");
+					console.log(values);
 
-		// store first 8 promises into a list so that these will execute first
-		let promises = []
+					// check first batch of data
+					for (var i = values.length - 1; i >= 0; i--) {
+						this.check(values[i].data);
+					}
 
-		// push the first 8 promises into the arr
-		while(i<8){
-			let tag = "Broadband";
-			let name = this.names[i];
-			promises.push(
-				axios.get(api.requestagent,{
-		            params:{
-		                tag:tag,
-		                name:name
-		            },
-		            timeout: 1000000
-		        })
-		    );
-		    i++
-		}
+					// end calls
+					Promise.all(this.agentEndCalls())
+					.then(values=>{
+						console.log("agent end call");
+						console.log(values);
 
-		Promise.all(promises)
-		.then( values=>{
+						// request Agents
+						Promise.all(this.requestAgents())
+						.then(values=>{
+							console.log("request agents 2");
+							console.log(values);
 
-			// continue only after the first batch of promises have resolved
-
-			// Check the first 8 values
-			// console.log(values);
-			for (var i = values.length - 1; i >= 0; i--) {
-				this.check(values[i]);
-			}
-
-			// make the reset
-			fetch(api.reset+"?availability="+1)
-			.then(res =>{
-				res.json().then(data=>{
-					console.log("2 login");
-					if (!data.done){
-						console.log("FAILED TO RESET");
-					} else {
-
-						// if reset is successful
-						// console.log("Reset 1 done");
-
-						// Copy the accounts again
-						this.availableAccounts = [...this.broadbandAccounts];
-
-						// push the last 8 requests 
-						let promises = [];
-						let i =8;
-						while(i<16){
-							let tag = "Broadband";
-							let name = this.names[i];
-							promises.push(
-								axios.get(api.requestagent,{
-								    params:{
-								        tag:tag,
-								        name:name
-								    },
-								    timeout: 1000000
-								})
-							);
-							i++
-						}
-
-						Promise.all(promises)
-						.then(nvalues=>{
-							console.log(nvalues);
-
-							// check the last 8 values
-							for (var i = nvalues.length - 1; i >= 0; i--) {
-								this.check(nvalues[i]);
+							// check second batch of data
+							for (var i = values.length - 1; i >= 0; i--) {
+								this.check(values[i].data);
 							}
 						})
-					}
+					})
 				})
 			})
-		});		
+		})
 	}
 
-	check =(res)=>{
-		let data = res.data;
+	requestAgents = ()=>{
+		// push the requests 
+		let promises = [];
+		let i =0;
+		while(i<8){
+			let tag = "Broadband";
+			let name = this.names[0];
+			promises.push(
+				axios.get(api.requestagent,{
+				    params:{
+				        tag:tag,
+				        name:name
+				    },
+				    timeout: 1000000
+				})
+			);
+			i++;
+			this.names.shift();			
+			console.log(this.names.length);
+		}
+		return promises;
+	}
+
+	logins =()=>{
+		let promises = [];
+		let i = 0;
+		while (i<8){
+			let url = api.agentlogin +"?"+key.EMAIL+"=" +this.validUserIds[i]+"&"+key.PASSWORD+"="+c.PASSWORD;
+			promises.push(fetch(url));
+			i++;
+		}
+		this.availableAccounts = [...this.broadbandAccounts];
+		return promises;
+	}
+
+	toggleAgentAvailabilities =()=>{
+		let promises = [];
+		let i = 0;
+		while (i<8){
+			let url = api.toggleagentavailability +"?"+key.RAINBOWID+"=" +this.broadbandAccounts[i]+"&availability=available";
+			promises.push(fetch(url));
+			i++;
+		}
+		return promises;
+	}
+
+	agentEndCalls =(resolve, reject)=>{
+		let promises = [];
+		let i = 0;
+		while (i<8){
+			let url = api.endagentcall +"?"+key.RAINBOWID+"=" +this.broadbandAccounts[i];
+			promises.push(fetch(url));
+			i++;
+		}
+		this.availableAccounts = [...this.broadbandAccounts];
+		return promises;
+	}
+
+	check =(data)=>{
 		let error = false;
 
         if (!data.success){
@@ -172,6 +195,8 @@ class QueueSystem extends React.Component {
 				result: c.RESULT_FAILED,
 				errors: this.state.errors + msg
 			});
+			console.log(msg)
+			console.log(data)
 			error = true;
 			
 		} else {	// data success
@@ -184,6 +209,9 @@ class QueueSystem extends React.Component {
 					result: c.RESULT_FAILED,
 					errors: this.state.errors + msg
 				});
+				console.log(msg)
+				console.log(data)
+				console.log(this.availableAccounts);
 				error = true;
 
 			} else {	// if everything is going according to plan
@@ -223,8 +251,12 @@ class QueueSystem extends React.Component {
 				<td className="align-left">
 					<b>Queue system</b><br/><br/>
 					<b>Test 1: </b> 
-					With 8 agents of the same tag available, 8 requests will be sent to the server. The response should contain a different agent ID everytime.
-					Once 8 requests are handled, the 8 agents will end their calls and another 8 requests will be made.
+					8 agent of the same tag will log in, then toggle availability.
+					8 agent requsts will be made. The requests will be responded to one by one.
+					The requests will be checked that they do not receive the same agent ID.
+					After which, the agents will end their calls. 
+					Then, another 8 requests will be made and have their responses checked.<br/>
+
 				</td>
 				<td>
 					{this.state.progress}<br/><br/>
