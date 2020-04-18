@@ -187,18 +187,22 @@ router.get('/removeTasks',(req,res)=>{
 router.get('/getQueue',(req,res)=>{
     var tag = req.query.tag
     var tagq = eval(tag+"q")
-    var queueposition = 999;
+    var queueposition = 0;
     var items = [...tagq];
     for (let index = 0; index < tagq.length(); index++) {
-        if(items[index].name == req.query.name){
-            queueposition = index;
+        if(items[index].name == req.query.name ){
+            queueposition = index+1;
         }
-        
     }
     var timeleft = queueposition * timemultiplier
     res.json({
         queueposition: queueposition,
-        timeleft: timeleft
+        timeleft: timeleft,
+        status:{
+            success: true,
+            errorId: 0,
+            errorMsg: ""
+        }
     })
 })
 //initialise queue with tags
