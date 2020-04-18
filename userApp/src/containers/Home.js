@@ -98,81 +98,92 @@ class Home extends React.Component {
 	
     addBotMessage= (message ) => {
         let newMessage = Object.assign({}, message);
-        axios.post(dialogFlowBaseUrl,newMessage)
-        .then(res=>{
-            newMessage.text = res['data'];
-            newMessage.author = this.bot;
-            var messagecheck = newMessage.text.split(" ");
-            console.log(messagecheck)
+        if(message.text == "Where am I in the queue?"){
+            this.getQueue(newMessage);
+        }
+        else{
+            axios.post(dialogFlowBaseUrl,newMessage)
+            .then(res=>{
+                newMessage.text = res['data'];
+                newMessage.author = this.bot;
+                var messagecheck = newMessage.text.split(" ");
+                console.log(messagecheck)
 
-            if(messagecheck[messagecheck.length-1]==="problem?"){
-                newMessage.suggestedActions= [
-                    {
-                        type: "reply",
-                        value: "Accounts and bills"
-                    },        
-                    {
-                        type: "reply",
-                        value: "Broadband"
-                    },
-                    {
-                        type: "reply",
-                        value: "Home line"
-                    },
-                    {
-                        type: "reply",
-                        value: "Mobile prepaid"
-                    },
-                    {
-                        type: "reply",
-                        value: "Mobile postpaid"
-                    },
-                    {
-                        type: "reply",
-                        value: "Online purchases"
-                    },
-                    {
-                        type: "reply",
-                        value: "Singtel TV"
-                    },
-                    {
-                        type: "reply",
-                        value: "Lifestyle"
+                if(messagecheck[messagecheck.length-1]==="problem?"){
+                    newMessage.suggestedActions= [
+                        {
+                            type: "reply",
+                            value: "Accounts and bills"
+                        },        
+                        {
+                            type: "reply",
+                            value: "Broadband"
+                        },
+                        {
+                            type: "reply",
+                            value: "Home line"
+                        },
+                        {
+                            type: "reply",
+                            value: "Mobile prepaid"
+                        },
+                        {
+                            type: "reply",
+                            value: "Mobile postpaid"
+                        },
+                        {
+                            type: "reply",
+                            value: "Online purchases"
+                        },
+                        {
+                            type: "reply",
+                            value: "Singtel TV"
+                        },
+                        {
+                            type: "reply",
+                            value: "Lifestyle"
+                        }
+                    ];
+                    if(messagecheck[0]=="Hi"){
+                        this.user.name = messagecheck[1].slice(0,messagecheck[1].length-1);
                     }
-                ];
-            }
-            if(messagecheck[messagecheck.length-1]==="right?"){
-                newMessage.suggestedActions= [
-                    {
-                        type: "reply",
-                        value: "Yes"
-                    },        
-                    {
-                        type: "reply",
-                        value: "No"
-                    }
-                ];
-            }
-            if(messagecheck[messagecheck.length-1]==="agent!"){
-                console.log("switching over to rainbow");
-                this.bot = { 
-                    name: "rainbow agent", 
-                    id: Date.now().toString()
-                };
+                }
+                if(messagecheck[messagecheck.length-1]==="right?"){
+                    newMessage.suggestedActions= [
+                        {
+                            type: "reply",
+                            value: "Yes"
+                        },        
+                        {
+                            type: "reply",
+                            value: "No"
+                        }
+                    ];
+                }
+                if(messagecheck[messagecheck.length-1]==="agent!"){
+                    console.log("switching over to rainbow");
+                    // set userWaiting to true to disable text input until connection with agent is established
+                    this.setState({
+                        userWaiting: true
+                    })
 
-                // set userWaiting to true to disable text input until connection with agent is established
+                    // get agent
+                    this.getAgent();
+
+                    // give user option to check queue
+                    newMessage.suggestedActions = [
+                        {
+                            type: "reply",
+                            value: "Where am I in the queue?"
+                        }
+                    ]
+                }
+
                 this.setState({
-                    userWaiting: true
-                })
-
-                // get agent
-                this.getAgent();
-            }
-
-            this.setState({
-                messages: [...this.state.messages, newMessage]
-            });
-        })  
+                    messages: [...this.state.messages, newMessage]
+                });
+            })  
+        }
     }
 
     addRainbowMessage = (message) =>{
@@ -285,11 +296,39 @@ class Home extends React.Component {
     }
 
     /******************************* api methods  **********************************/
+
+    getQueue = (newMessage) =>{
+        let url = api.URI + api.GET_QUEUE + "?" + api.TAG + "=" + this.state.tag + "&" + api.NAME + "=" + this.user.name;
+        console.log(url);
+        fetch(url)
+            .then( (res) =>{
+                console.log(res)
+                res.json().then((data) =>{
+                    if(data.queueposition == 0){
+                        newMessage.text = "you are next in the queue! Please hold on."
+                    }
+                    else{
+                        newMessage.text = "There is still " + data.queueposition + " people in front of you. Estimated waiting time is " + data.timeleft + " min."
+                    }
+                    newMessage.author = this.bot;
+                    newMessage.suggestedActions = [
+                        {
+                            type: "reply",
+                            value: "Where am I in the queue?"
+                        }
+                    ]
+
+                    this.setState({
+                        messages: [...this.state.messages, newMessage]
+                    });
+                            
+                })
+            })
+    }
     getAgent = () =>{
         // parse url
-        let url = api.URI+api.REQUEST_AGENT+"?"+api.TAG+"="+this.state.tag;
+        let url = api.URI+api.REQUEST_AGENT+"?"+api.TAG+"="+this.state.tag + "&" + api.NAME + "=" + this.user.name;
         console.log(url);
-
         fetch(url)
             .then( (res) => {
                 console.log(res)
@@ -394,7 +433,7 @@ class Home extends React.Component {
 
     openConversationWithAgentId = (strId) =>{
         let that = this;
-
+        this.bot.name = "rainbow agent";
         // look for contact with id
         window.rainbowSDK.contacts
             .searchById(strId)
