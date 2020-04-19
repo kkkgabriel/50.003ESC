@@ -10,6 +10,9 @@ import GetAnonymous from './unitTests/getAnonymous.js';
 
 // system tests
 import QueueSystem from './systemTests/queueSystem.js';
+import TwoQueueConcurrency from './systemTests/twoQueueConcurrency.js';
+import ThreeQueueConcurrency from './systemTests/threeQueueConcurrency.js';
+
 
 
 require('bootstrap');
@@ -28,17 +31,20 @@ class Testcases extends React.Component {
 		}
 
 		this.systemTestsRefs = {
-			queueSystemRef: React.createRef()
+			queueSystemRef: React.createRef(),
+			twoQueueConcurrencyRef: React.createRef(),
+			threeQueueConcurrencyRef: React.createRef()
 		}
 
 		this.state = {
-			title: "Unit Tests"
+			title: "System Tests"
 		}
 	}
 
 	componentDidMount(){
 		console.log("component did mount");
 		console.log(this.unitTestsRefs);
+		console.log(this.systemTestsRefs);
 		// this.unitTestsRefs.agentLoginRef.current.click();
 	}
 
@@ -57,7 +63,16 @@ class Testcases extends React.Component {
 	}
 
 	startAllSystemTest =()=>{
-		this.systemTestsRefs.queueSystemRef.current.click();
+		this.systemTestsRefs.twoQueueConcurrencyRef.current.click();
+		(async () => {
+			await wait(30000);
+			this.systemTestsRefs.threeQueueConcurrencyRef.current.click();	
+			(async () => {
+				await wait(17000);
+				this.systemTestsRefs.queueSystemRef.current.click();
+				
+			})()
+		})()
 	}
 
 	startAllUnitTest =()=>{
@@ -134,6 +149,8 @@ class Testcases extends React.Component {
 					}
 					{this.state.title=="System Tests" &&
 						<tbody>
+							<TwoQueueConcurrency myRef={this.systemTestsRefs.twoQueueConcurrencyRef}/>
+							<ThreeQueueConcurrency myRef={this.systemTestsRefs.threeQueueConcurrencyRef}/>
 							<QueueSystem myRef={this.systemTestsRefs.queueSystemRef}/>
 						</tbody>
 					}

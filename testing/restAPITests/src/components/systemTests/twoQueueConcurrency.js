@@ -4,31 +4,22 @@ import * as c from '../constants/constants';
 import * as key from '../constants/keys';
 const axios = require('axios');
 
-class QueueSystem extends React.Component {
+class TwoQueueConcurrency extends React.Component {
 	constructor(props){
 		super(props);
 
-		this.broadbandAccounts = [
-			// "5e6009fed8084c29e64eb45a",	uncomment this to fail the test // broadband
-			"5e6009fed8084c29e64eb45a",	// broadband
-			"5e8aba1f35c8367f99b9834c",	// broadband2
-			"5e8aba3e35c8367f99b98355",	// broadband3
-			"5e8aba0535c8367f99b9831f",	// broadband4
-			"5e8aba0935c8367f99b98328",	// broadband5
-			"5e8aba0c35c8367f99b98331",	// broadband6
-			"5e8aba0f35c8367f99b9833a",	// broadband7
-			"5e8aba1335c8367f99b98343"	// broadband8
+		this.rainbowIds = [
+			"5e6009cad8084c29e64eb43f",	// AccountsNBills
+			"5e600991d8084c29e64eb436"	// MobilePostpaid
 		]
-		this.validUserIds = [
-			"Broadband@gmail.com",
-			"Broadband2@gmail.com",
-			"Broadband3@gmail.com",
-			"Broadband4@gmail.com",
-			"Broadband5@gmail.com",
-			"Broadband6@gmail.com",
-			"Broadband7@gmail.com",
-			"Broadband8@gmail.com"
+		this.emails = [
+			"AccountsNBills@gmail.com",
+			"MobilePostpaid@gmail.com"
 		];
+		this.tags = [
+			"MobilePostpaid",
+			"AccountsNBills"
+		]
 
 		this.availableAccounts = [];
 
@@ -36,19 +27,7 @@ class QueueSystem extends React.Component {
 			"Alexander",
 			"Benjamin",
 			"Christopher",
-			"Daniel",
-			"Ethan",
-			"Fernando",
-			"Gabriel",
-			"Henry",
-			"Isaac",
-			"Jacob",
-			"Kevin",
-			"Liam",
-			"Mason",
-			"Noah",
-			"Owen",
-			"Parker"
+			"Daniel"
 		]
 
 		this.state = {
@@ -62,11 +41,9 @@ class QueueSystem extends React.Component {
 	}
 
 	startTests =()=>{
+		this.availableAccounts = [...this.rainbowIds];
 
 		api.resetfn();
-
-		// copy the broadband acc to available accounts arr
-		this.availableAccounts = [...this.broadbandAccounts];
 
 		// set the number of test to the number of names
 		let n = this.names.length;
@@ -82,61 +59,47 @@ class QueueSystem extends React.Component {
 	}
 
 	test1 =()=>{
+		// Make requests
+		Promise.all(this.requestAgents())
+		.then(values=>{
+			console.log(values);
 
-		this.wait(85000).then(()=>{	// fail the test if still going on after 85s
-			if ( this.state.progress !== c.PROGRESS_COMPLETED){
-				let msg = "Timeout: something is stuck\n";
-				this.setState({
-					result: c.RESULT_FAILED,
-					errors: this.state.errors + msg
-				});
+			for (var i = 0; i < values.length; i++) {
+				if (i==2){
+					this.availableAccounts = [...this.rainbowIds];					
+				}
+				this.check(values[i].data);
 			}
 		})
 
-		// Log in all agents
-		Promise.all(this.logins())
-		.then(values=>{
-			console.log("logging in");
-			console.log(values)
+		// wait 8s  
+		this.wait(8000).then(()=>{
 
-			// toggle availability
-			Promise.all(this.toggleAgentAvailabilities())
+			// login
+			Promise.all(this.logins())
 			.then(values=>{
-				console.log("Toggling availability")
-				console.log(values)
+				// console.log("this.login values");
+				// console.log(values)
 
-				// request Agents
-				Promise.all(this.requestAgents())
+				// toggle agent availabilities
+				Promise.all(this.toggleAgentAvailabilities())
 				.then(values=>{
-					console.log("request agents");
-					console.log(values);
+					// console.log("this.toggleAgentAvailabilities values");
+					// console.log(values)
 
-					// check first batch of data
-					for (var i = values.length - 1; i >= 0; i--) {
-						this.check(values[i].data);
-					}
-
-					// end calls
-					Promise.all(this.agentEndCalls())
-					.then(values=>{
-						console.log("agent end call");
-						console.log(values);
-
-						// request Agents
-						Promise.all(this.requestAgents())
+					// wait 8s 
+					this.wait(8000).then(()=>{
+						Promise.all(this.agentEndCalls())
 						.then(values=>{
-							console.log("request agents 2");
-							console.log(values);
-
-							// check second batch of data
-							for (var i = values.length - 1; i >= 0; i--) {
-								this.check(values[i].data);
-							}
+							// console.log("this.agentEndCalls values");
+							// console.log(values)
+							console.log("all calls done");
 						})
 					})
 				})
 			})
 		})
+
 	}
 
 	wait = (t)=>{
@@ -152,8 +115,8 @@ class QueueSystem extends React.Component {
 		// push the requests 
 		let promises = [];
 		let i =0;
-		while(i<8){
-			let tag = "Broadband";
+		while(i<4){
+			let tag = this.tags[i%2];
 			let name = this.names[0];
 			promises.push(
 				axios.get(api.requestagent,{
@@ -174,20 +137,19 @@ class QueueSystem extends React.Component {
 	logins =()=>{
 		let promises = [];
 		let i = 0;
-		while (i<8){
-			let url = api.agentlogin +"?"+key.EMAIL+"=" +this.validUserIds[i]+"&"+key.PASSWORD+"="+c.PASSWORD;
+		while (i<2){
+			let url = api.agentlogin +"?"+key.EMAIL+"=" +this.emails[i]+"&"+key.PASSWORD+"="+c.PASSWORD;
 			promises.push(fetch(url));
 			i++;
 		}
-		this.availableAccounts = [...this.broadbandAccounts];
 		return promises;
 	}
 
 	toggleAgentAvailabilities =()=>{
 		let promises = [];
 		let i = 0;
-		while (i<8){
-			let url = api.toggleagentavailability +"?"+key.RAINBOWID+"=" +this.broadbandAccounts[i]+"&availability=available";
+		while (i<2){
+			let url = api.toggleagentavailability +"?"+key.RAINBOWID+"=" +this.rainbowIds[i]+"&availability=available";
 			promises.push(fetch(url));
 			i++;
 		}
@@ -197,12 +159,11 @@ class QueueSystem extends React.Component {
 	agentEndCalls =(resolve, reject)=>{
 		let promises = [];
 		let i = 0;
-		while (i<8){
-			let url = api.endagentcall +"?"+key.RAINBOWID+"=" +this.broadbandAccounts[i];
+		while (i<2){
+			let url = api.endagentcall +"?"+key.RAINBOWID+"=" +this.rainbowIds[i];
 			promises.push(fetch(url));
 			i++;
 		}
-		this.availableAccounts = [...this.broadbandAccounts];
 		return promises;
 	}
 
@@ -227,7 +188,7 @@ class QueueSystem extends React.Component {
 
 			// report error if agentId is not in accounts arr
 			if (!this.availableAccounts.includes(agentId)){
-				let msg = "Agent ID returned is not available or is a duplicate\n";
+				let msg = "Agent ID returned is not available\n";
 				this.setState({
 					result: c.RESULT_FAILED,
 					errors: this.state.errors + msg
@@ -272,13 +233,12 @@ class QueueSystem extends React.Component {
 		return (
 			<tr>
 				<td className="align-left">
-					<b>Queue system</b><br/><br/>
+					<b>2 Queue Concurrency</b><br/><br/>
 					<b>Test 1: </b> 
-					8 agent of the same tag will log in, then toggle their availability.
-					8 agent requests will be made. The requests should be responded to one by one.
-					The requests will be checked that they do not receive the same agent ID.
-					After which, the agents will end their calls. 
-					Then, another 8 requests will be made and have their responses checked.<br/>
+					4 request agent calls will be made to 2 different tags.
+					These will not finish immediately.
+					The first 2 request agent calls should finish first. 
+					2 agent end call calls will be made, and the last 2 requestagent calls should finish, with the same agent id as the first 2. <br/>
 
 				</td>
 				<td>
@@ -296,4 +256,4 @@ class QueueSystem extends React.Component {
 }
 
 
-export default QueueSystem;
+export default TwoQueueConcurrency;

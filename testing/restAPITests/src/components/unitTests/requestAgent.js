@@ -77,6 +77,7 @@ class RequestAgent extends React.Component {
 				.then(res => {
 					res.json().then( data=>{
 
+
 						// if valid tags are unable to return a user id, set rsult to failed
 						if (!data.success){
 							let msg = "Valid Tag unable to return a valid agentId\n";
