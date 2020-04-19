@@ -127,6 +127,7 @@ Lifestyleq.error(function(err,task){
 
 //get request to add user to relevant queue.
 router.get('/requestAgent',(req,res)=>{
+    console.log('requestAgent for '+req.query.name);
     tag = req.query.tag;
     notemail = "";
     if (req.query.notemail != null){
