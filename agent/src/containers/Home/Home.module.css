@@ -1,0 +1,34 @@
+.Chat {
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.Container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.Container button{
+    margin: 8px 8px;
+    background-color: dodgerblue;
+    color: white;
+    border-color: none;
+}
+
+.Container button#red{
+    background-color: darkorange;
+    color: white;
+}
+
+.Container button#red:hover,
+           button#red:active{
+    background-color: red;
+    color: white
+}
+.Container button:hover,
+           button:active{
+    background-color: deepskyblue;
+    color: white;
+}
