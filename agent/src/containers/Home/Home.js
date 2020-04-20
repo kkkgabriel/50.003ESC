@@ -6,6 +6,8 @@ import { Redirect } from 'react-router-dom'
 import { authFail, authSignOut } from '../../store/actions/auth.js';
 import DialogHome from '../../components/DialogHome/DialogHome'
 import Toolbar from '../../components/Toolbar/Toolbar.js';
+
+import classes from './Home.module.css'
 class Home extends Component {
 
     constructor (props) {
@@ -52,13 +54,8 @@ class Home extends Component {
                     })
                 })
         })
-    }
-    componentWillUnmount() {
-        window.rainbowSDK.connection.signout()
-        .then(() => {
-            console.log("Logout")
-            // dispatch
-            this.props.onLogout()
+        window.addEventListener('unload', event => {
+            this.logoutHandler()
         })
     }
 
@@ -97,8 +94,6 @@ class Home extends Component {
             .catch(err=>{
                 console.log("error")
             })
-
-
     }
 
     reroute = () => {
@@ -126,27 +121,13 @@ class Home extends Component {
         this.done()
     }
 
-
     toggleDialog = ()=>{
-		// console.log("toggling dialog");
-
-        // if rejecting the call, send the reject keyword
+        // console.log("toggling dialog");
+        // if rejecting 
         if (this.state.visible){
             window.rainbowSDK.im.sendMessageToConversation(this.state.conversation, consts.REJECT_KEYWORD);
-            // let url = consts.END_AGENT_CALL+consts.RAINBOWID_PARAM+"="+this.user.id;
-            // fetch(url)
-            //     .then( res=>{
-            //         res.json().then(data=>{
-            //             if (!data.status.success){
-            //                 console.log(data.status.error.errorMsg);
-            //             }
-            //         })
-            //     })
-            //     .catch(err=>{
-            //         console.log("error")
-            //     })
         }
-
+        // set the state of the dialog
         this.setState({
             visible: !this.state.visible
         });
@@ -171,10 +152,12 @@ class Home extends Component {
         }
         let url = consts.TOGGLE_AVAIL+consts.RAINBOWID_PARAM+"="+this.user.id+"&"+consts.AVAIL_PARAM+"="+avail;
         // rest API send that the agent is available / not available
+        console.log("[toggleIsAgentAvailable]: send " + url)
         fetch(url)
             .then(res=>{
                 res.json().then(data=>{
                     if (data.status.success){
+                        console.log("[toggleIsAgentAvailable]: success")
                         this.setState({
                             isAgentAvailable: !this.state.isAgentAvailable
                         })
@@ -302,8 +285,6 @@ class Home extends Component {
                 console.log("sth went wrong")
                 console.log(err)
             });
-
-        
     }
 
     userEndCall = () => {
@@ -323,7 +304,6 @@ class Home extends Component {
 
 
     endCall = () =>{
-
         // send special message to user to end the call
         window.rainbowSDK.im.sendMessageToConversation(this.state.conversation, consts.END_KEYWORD);
 
@@ -362,17 +342,19 @@ class Home extends Component {
                 }
                 {this.state.isAvailable &&
                     <div>
-                        <Chat user={this.user}
+                        <Chat
+                            className={classes.Chat} 
+                            user={this.user}
                             messages={this.state.messages}
                             onMessageSend={this.addNewMessage}
                             placeholder={"Type a message..."}
                             width={800}>
                         </Chat>
-                        <span style={{justifyContent:"center"}}>
+                        <span className={classes.Container}>
                             { !this.state.reroute &&
                                 <div>
                                     <button className="k-button" onClick={this.reroute}>Reroute </button>
-                                    <button className="k-button" onClick={this.endCall}>End Call </button>
+                                    <button className="k-button" id={classes.red} onClick={this.endCall}>End Call </button>
                                 </div>
                             }
                             { this.state.reroute &&
@@ -385,7 +367,7 @@ class Home extends Component {
                                     <button className="k-button" onClick={()=>this.reroutetag("HomeLine")}>HomeLine</button>
                                     <button className="k-button" onClick={()=>this.reroutetag("OnlinePurchase")}>OnlinePurchase </button>
                                     <button className="k-button" onClick={()=>this.reroutetag("Lifestyle")}>Lifestyle</button>
-                                    <button className="k-button" onClick={this.reroute}>Back</button>
+                                    <button className="k-button" id={classes.red} onClick={this.reroute}>Back</button>
                                 </div>
                             }
                         </span>

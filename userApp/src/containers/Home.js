@@ -4,8 +4,10 @@ import "@progress/kendo-theme-default/dist/all.css";
 import { Chat } from '@progress/kendo-react-conversational-ui';
 import { Button} from '@progress/kendo-react-buttons'
 import axios from 'axios';
+import classes from './Home.module.css';
 import * as api from '../constants/api.js';
 import * as keys from '../constants/keywords.js';
+import { Keys } from '@progress/kendo-react-common';
 
 const dialogFlowBaseUrl = "http://localhost:3005";
 
@@ -19,12 +21,12 @@ class Home extends React.Component {
 		}
         this.bot = {
 			id: "0", 
-			name: "bot" 
+			name: keys.BOT
         };
         
         this.agent = {
-            id: "2",
-            name: "agent"
+            id: "1",
+            name: keys.RAINBOW_AGENT
         }
         axios.post(
 			dialogFlowBaseUrl,
@@ -52,7 +54,10 @@ class Home extends React.Component {
             rainbowOnline: false,
 
             // Change state when user is waiting, 
-            userWaiting: false
+            userWaiting: false,
+
+            // Change state when agent is online
+            agentOnline: false
 		};
 		// This allows us to have event hadnler that handles this
 		this.addNewMessage = this.addNewMessage.bind(this);
@@ -86,13 +91,11 @@ class Home extends React.Component {
                 return { messages: [ ...prevState.messages, { author: this.user, text: value, timestamp: new Date() } ] };
             });
 		}
-
-		if(this.bot.name === "bot"){
+        if (this.state.agentOnline){
+            this.addRainbowMessage(event.message)
+        }
+		else if(this.bot.name === keys.BOT){
 			this.addBotMessage(event.message)
-		}
-		else{
-            // console.log(event);
-			this.addRainbowMessage(event.message)
 		}
 	};
 	
@@ -211,6 +214,8 @@ class Home extends React.Component {
                 break;
             case keys.END_KEYWORD:
                 this.onReceiveEndCall();
+                console.log("END CALL")
+                return
                 break;
             case keys.REROUTE_KEYWORD:
                 this.onReceiveReroute(lastMessage[1])
@@ -222,9 +227,10 @@ class Home extends React.Component {
        
 
         // create message that is suitable for kendo chat to display
+        // it is already a rainbow agent
         let newMessage = Object.assign({});
         newMessage.text = lastMessage.join(" ");
-        newMessage.author = this.bot;
+        newMessage.author = this.agent;
         this.setState({
             messages: [...this.state.messages, newMessage]
         });
@@ -433,7 +439,8 @@ class Home extends React.Component {
 
     openConversationWithAgentId = (strId) =>{
         let that = this;
-        this.bot.name = "rainbow agent";
+        // should not do this
+        // this.bot.name = "rainbow agent";
         // look for contact with id
         window.rainbowSDK.contacts
             .searchById(strId)
@@ -474,7 +481,8 @@ class Home extends React.Component {
     /******************************* keyword handler methods  **********************************/
     onReceiveReject= ()=>{
         this.setState({
-            userWaiting: true
+            userWaiting: true,
+            agentOnline: false
         });
 
         // get agent
@@ -484,7 +492,8 @@ class Home extends React.Component {
     onReceiveAccept = () => {
         // set userWaiting to false to disable input
         this.setState({
-            userWaiting: false
+            userWaiting: false,
+            agentOnline: true
         });
     }
 
@@ -493,7 +502,8 @@ class Home extends React.Component {
         // if reroute successful, userWaiting to false
         this.setState({
             userWaiting: true,
-            tag: newTag
+            tag: newTag,
+            agentOnline: false
         });
 
         // get agent
@@ -507,9 +517,13 @@ class Home extends React.Component {
         let newMessage = Object.assign({});
         newMessage.author = this.bot
         newMessage.text = "Chat Session ended"
+        let problemMessage = Object.assign({})
+        problemMessage.author = this.bot
+        problemMessage.text = "If you still have any other problem, I would be happy to help"
         console.log("rainbowOnline" + this.state.rainbowOnline)
         this.setState({
-            messages :[...this.state.messages,newMessage]
+            messages :[...this.state.messages,newMessage, problemMessage],
+            agentOnline: false
         });
     }
 
@@ -519,16 +533,23 @@ class Home extends React.Component {
     render() {       
         return (
             <div>
-                <h1>Convsersational UI</h1>
-                <p>{this.state.version}</p>
-                <Chat user={this.user}
+                <div className={classes.Header}>
+                    <h1 className={classes.Title} >Customer Service ChatBot</h1>
+                </div>
+                {//<p>{this.state.version}</p>
+                }
+                <Chat
+                    className={classes.Chat} 
+                    user={this.user}
                     messages={this.state.messages}
                     onMessageSend={this.addNewMessage}
                     placeholder={"Type a message..."}
                     width={400}>
                 </Chat>
-               <Button onClick={this.endCall}>End Chat</Button>
-               <Button onClick={this.getAnotherAgent}>Get another Agent</Button>
+                <div className={classes.container}>
+                    <Button className={classes.button} onClick={this.endCall}>End Chat</Button>
+                    <Button className={classes.button} onClick={this.getAnotherAgent}>Get another Agent</Button>
+                </div>
             </div>
         );
     }

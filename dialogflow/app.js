@@ -57,7 +57,6 @@ class DialogFlow {
 			throw err
 		}
   }
-  
 }
 
 const dialogflowtest = new DialogFlow('rainbowchatbot-gumcjk');
@@ -65,7 +64,8 @@ const sessionid = uuid.v4();
 
 
 app.post('/', (req, res) => {
-	console.log(req.body["text"])
+    console.log(req.body["text"])
+    console.log(sessionid)
 	dialogflowtest.sendTextMessageToDialogFlow(req.body["text"],sessionid).then(result=>{
 		return res.send(result)
 	}
