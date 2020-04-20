@@ -2,6 +2,8 @@ const express = require('express');
 var router = express.Router();
 const connection = require('../database');
 
+var loginAgentList=[];
+
 router
 .get(
 	'/agentlogin',
@@ -33,6 +35,11 @@ router
 					status.success = false;
 					status.error.errorMsg = "Invalid credentials";
 					status.error.errorId = 2;
+				}
+				if (status.success){
+					console.log("login success");
+					//logout sess part 2: check which accounts logged in for sess
+					loginAgentList.push(agentemail);
 				}
 				res.json({status: status});
 			}

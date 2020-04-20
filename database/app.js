@@ -6,6 +6,9 @@
  */
 /* run nodejs*/
 /* http://localhost:3000/entries*/
+
+
+
 require('dotenv').config()
 
 //dependencies
@@ -16,6 +19,8 @@ const connection = require('./database');
 var cors = require('cors');
 
 app.use(cors())
+
+
 
 /************************* agent methods ***************************
 /agentlogin
@@ -70,3 +75,11 @@ app.get('/reset',
 
 /// Port 8080 for Google App Engine
 app.listen(process.env.PORT || 3500);
+
+//use signals to intercept terminal cmds
+//SIGINT : ctrl^c
+//SIGTERM : termination cmd
+process.on('SIGINT',() =>{
+	console.info('SIGTERM signal for database receieved');
+	/********************** import variables **************************/
+} );
