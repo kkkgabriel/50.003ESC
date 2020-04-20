@@ -181,7 +181,7 @@ class userAppTest(unittest.TestCase):
         self.actions_agent.click(elem_accept).perform()
 
         wait = WebDriverWait(self.driver_agent, 2)
-        wait.until(EC.presence_of_element_located((By.XPATH, "//div[@class='k-widget k-chat']")))
+        wait.until(EC.presence_of_element_located((By.XPATH, "//div[contains(@class,'k-widget') and contains(@class,'k-chat')]")))
 
         # agent send message 
         regex = "`1234567890-=qwertyuiop\[]\\asdfghjkl;\'zxcvbnm,\.\/!@#\$%\^\&\*\(\)_\+QWERTYUIOP{\}\|ASDFGHJKL:\"ZXCVBNM<>\?"
@@ -238,7 +238,7 @@ class userAppTest(unittest.TestCase):
             self.actions_agent.click(elem_accept).perform()
 
             wait = WebDriverWait(self.driver_agent, 2)
-            wait.until(EC.presence_of_element_located((By.XPATH, "//div[@class='k-widget k-chat']")))
+            wait.until(EC.presence_of_element_located((By.XPATH, "//div[contains(@class,'k-widget') and contains(@class,'k-chat')]")))
 
             # agent send message 
             regex = "`1234567890-=qwertyuiop\[]\\asdfghjkl;\'zxcvbnm,\.\/!@#\$%\^\&\*\(\)_\+QWERTYUIOP{\}\|ASDFGHJKL:\"ZXCVBNM<>\?"

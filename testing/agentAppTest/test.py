@@ -135,7 +135,7 @@ class PythonOrgSearch(unittest.TestCase):
     # postcondition: click accept chat with user
     def ongoing_conversation(self):
         self.initialize_user_and_agent_connection()
-        time.sleep(2)
+        time.sleep(10)
         self.actions_agent = ActionChains(self.driver_agent)
 
         elem_accept = self.driver_agent.find_element_by_xpath("//button[contains(text(),'Accept')]")
@@ -188,7 +188,7 @@ class PythonOrgSearch(unittest.TestCase):
         time.sleep(2)
 
         try:
-            elem_chat = self.driver_agent.find_element_by_xpath("//div[@class='k-widget k-chat']")
+            elem_chat = self.driver_agent.find_element_by_xpath("//div[contains(@class,'k-widget') and contains(@class,'k-chat')]")
             print("passed test_accept_incoming_convo")
         except:
             print("failed test_accept_incoming_convo")
@@ -213,7 +213,7 @@ class PythonOrgSearch(unittest.TestCase):
             print("dialog was not opened.")
         time.sleep(5)
         try:
-            elem_chat = self.driver_agent.find_element_by_xpath("//div[@class='k-widget k-chat']")
+            elem_chat = self.driver_agent.find_element_by_xpath("//div[contains(@class,'k-widget') and contains(@class,'k-chat')]")
             print("failed test_accept_decline_convo")
         except:
             print("passed test_accept_decline_convo")
@@ -257,14 +257,14 @@ class PythonOrgSearch(unittest.TestCase):
         self.driver_agent_2 = webdriver.Chrome()
         self.driver_agent_2.get("http://127.0.0.1:3000")
         time.sleep(5)
-        elem_username = self.driver_agent.find_element_by_name("email")
+        elem_username = self.driver_agent_2.find_element_by_name("email")
         elem_username.send_keys("MobilePostpaid@gmail.com")
         time.sleep(1)
-        elem_password = self.driver_agent.find_element_by_name("password")
+        elem_password = self.driver_agent_2.find_element_by_name("password")
         elem_password.send_keys("Longpassword!1")
         time.sleep(1)
-        elem_login = self.driver_agent.find_element_by_xpath("//input[@class='k-button k-primary']")
-        self.actions_agent.click(elem_login).perform()
+        elem_login = self.driver_agent_2.find_element_by_xpath("//input[@class='k-button k-primary']")
+        elem_login.click()
         time.sleep(5)
         try:
             self.driver_agent_2.find_element_by_xpath("//div[contains(text(),'Failed to login')]")

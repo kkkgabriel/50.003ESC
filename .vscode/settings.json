@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "C:\\Users\\Mario\\.windows-build-tools\\python27\\python.exe",
+    "python.pythonPath": "C:\\Users\\Mario\\Anaconda3\\python.exe",
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true
 }

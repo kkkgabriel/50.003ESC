@@ -42,11 +42,13 @@ class Home extends Component {
             );
 
             let url = consts.TOGGLE_AVAIL+consts.RAINBOWID_PARAM+"="+this.user.id+"&"+consts.AVAIL_PARAM+"="+"available";
+            console.log(url)
             // rest API send that the agent is available / not available
             fetch(url)
                 .then(res=>{
                     res.json().then(data=>{
                         if (data.status.success){
+                            console.log("SET available success")
                             this.setState({
                                 isAgentAvailable: true
                             })
@@ -59,6 +61,9 @@ class Home extends Component {
         })
     }
 
+    componentWillUnmount = () =>{
+        window.rainbowSDK.signout()
+    }
     conversationsChangedHandler = (event)=>{
         console.log("conversationsChangedHandler triggered");
         // console.log("isAvailable is: " + this.state.isAvailable);
