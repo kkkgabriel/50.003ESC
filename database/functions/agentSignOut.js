@@ -2,6 +2,9 @@ const express = require('express');
 var router = express.Router();
 const connection = require('../database');
 
+//  precondition: agent's rainbowid is valid entry in db
+//  postcondition: PASS - update agent's loggedin in db to become 0 (isLoggedOut)
+//                 FAIL - no state change
 router.get(
 	'/agentsignout',
 	(req, res, next)=>{

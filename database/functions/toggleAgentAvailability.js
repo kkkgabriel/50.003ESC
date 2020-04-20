@@ -2,6 +2,9 @@ const express = require('express');
 var router = express.Router();
 const connection = require('../database');
 
+// precondition: agent entry in db
+// postcondition: PASS - agent entry's availability is changed
+//                FAIL - no state change
 router.get(
 	'/toggleagentavailability', 
 	function(req, res, next) {
