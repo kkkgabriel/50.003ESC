@@ -18,6 +18,7 @@ class PythonOrgSearch(unittest.TestCase):
         if '"' not in s: return '"%s"' % s
         return "concat('%s')" % s.replace("'", "',\"'\",'")
 
+    # postcondition: set all agent loggedout and not available
     def reset(self):
         print("----------------------------------------------------")
         print("reseting db");
@@ -26,6 +27,9 @@ class PythonOrgSearch(unittest.TestCase):
         x = requests.get("http://neobow.appspot.com/reset?availability=0")
         print("----------------------------------------------------")
 
+    # precondition: userapp kendo element ui input box loaded
+    # postcondition: fill userapp kendo element ui input box with input_data 
+    #                click button element correspondng to userapp kendo element ui input box to send input to agentapp
     def send_user_input(self, input_data):
         elemButton = self.driver_user.find_element_by_xpath("//button[@class='k-button k-flat k-button-icon k-button-send']")
         elemInput = self.driver_user.find_element_by_xpath("//input[@class='k-input']")
@@ -34,12 +38,17 @@ class PythonOrgSearch(unittest.TestCase):
         elemButton.click()
         time.sleep(1)
 
+    # precondition: userapp kendo element ui input box loaded
+    # postcondition: userapp kendo element ui input box loaded with received_data from agentapp
     def received_data_from_agent(self, received_data):
         Xpath = "//div[@class='k-bubble'][contains(text(),{})]".format(self.toXPathStringLiteral(received_data))
         elemResult = self.driver_user.find_element_by_xpath(Xpath)
         elemResult.location_once_scrolled_into_view
         time.sleep(1)
-    
+
+    # precondition: agentapp kendo element ui input box loaded
+    # postcondition: fill agentapp kendo element ui input box with input_data 
+    #                click button element correspondng to agentapp kendo element ui input box to send input to client
     def send_agent_input(self, input_data):
         elemButton = self.driver_agent.find_element_by_xpath("//button[@class='k-button k-flat k-button-icon k-button-send']")
         elemInput = self.driver_agent.find_element_by_xpath("//input[@class='k-input']")
@@ -47,13 +56,20 @@ class PythonOrgSearch(unittest.TestCase):
         time.sleep(1)
         elemButton.click()
         time.sleep(1)
+        
     
+    # precondition: agentapp kendo element ui input box loaded
+    # postcondition: agentapp kendo element ui input box loaded with received_data from userapp
     def received_data_from_user(self, received_data):
         Xpath = "//div[@class='k-bubble'][contains(text(),{})]".format(self.toXPathStringLiteral(received_data))
         elemResult = self.driver_agent.find_element_by_xpath(Xpath)
         elemResult.location_once_scrolled_into_view
         time.sleep(1)
 
+    # precondition: loaded agent login page
+    # postcondition: successful agent authentication
+    #                => agent is set to isAvailable in database
+    #                redirects to appAgent/home
     def log_in_success(self):
         self.driver_agent.get("http://127.0.0.1:3000")
         self.actions_agent = ActionChains(self.driver_agent)
@@ -69,6 +85,8 @@ class PythonOrgSearch(unittest.TestCase):
         wait = WebDriverWait(self.driver_agent, 15)
         wait.until(EC.url_to_be("http://127.0.0.1:3000/home"))
 
+    # precondition: loaded agent login page
+    # postcondition: load user kendo ui element
     def establishing_connection(self):
         #initialising
         self.log_in_success()
@@ -76,6 +94,9 @@ class PythonOrgSearch(unittest.TestCase):
         self.driver_user.get("http://127.0.0.1:3010")
         time.sleep(2)
 
+
+    # precondition: loaded user kendo ui element
+    # postcondtion: start conversation with agent on user kendo ui element
     def initialize_user_and_agent_connection(self, user_name = "Gabriel", phone = "0123456789", problem = "Mobile postpaid"):
         self.establishing_connection()
         
@@ -110,7 +131,8 @@ class PythonOrgSearch(unittest.TestCase):
 
         time.sleep(1)
 
-
+    # precondition: loaded accept chat with user pop-up notification
+    # postcondition: click accept chat with user
     def ongoing_conversation(self):
         self.initialize_user_and_agent_connection()
         time.sleep(2)
@@ -121,12 +143,17 @@ class PythonOrgSearch(unittest.TestCase):
         
         time.sleep(1)
         
+    # postcondition: agent login success
     def test_login_success(self):
         self.reset();
         print("\ntest_login_success");
         self.log_in_success()
         print("Pass login test")
 
+    # postcondition: PASS - agent logout button loads on agentApp/home upon successful authentication
+    #                       agent able to click on logout button
+    #                FAIL - agent logout button does not load
+    #                       agent unable to click on logout button
     def test_login_logout(self):
         self.reset();
         print("\ntest_login_logout");
@@ -141,6 +168,10 @@ class PythonOrgSearch(unittest.TestCase):
         except:
             print("Failed to logout")
 
+    # precondition: loaded accept chat with user pop-up notification
+    # postcondition: PASS - dialog for user chat appear 
+    #                       click accept chat with user
+    #                FAIL - dialog for user chat does not appear
     def test_accept_incoming_convo(self):
         self.reset();
         print("\ntest_accept_incoming_convo");
@@ -162,8 +193,11 @@ class PythonOrgSearch(unittest.TestCase):
         except:
             print("failed test_accept_incoming_convo")
 
-
-
+    
+    # precondition: loaded accept chat with user pop-up notification
+    # postcondition: PASS - decline user chat
+    #                FAIL - (i) dialog for user chat does not appear
+    #                       (ii) kendo ui element for user chat appears
     def test_decline_incoming_convo(self):
         self.reset();
         print("\ntest_decline_incoming_convo");
@@ -183,7 +217,8 @@ class PythonOrgSearch(unittest.TestCase):
             print("failed test_accept_decline_convo")
         except:
             print("passed test_accept_decline_convo")
-
+    
+    #postcondition: kendo ui element for agentapp received input from kendo ui element of userapp
     def test_send_message(self):
         self.reset();
         print("\ntest_send_message");
@@ -195,6 +230,7 @@ class PythonOrgSearch(unittest.TestCase):
         self.received_data_from_agent(regex)
         print("Pass send message")
     
+    # postcondition: kendo ui element for agent app is set to available
     def test_take_a_break(self):
         self.reset();
         print("\ntest_take_a_break");
@@ -212,6 +248,8 @@ class PythonOrgSearch(unittest.TestCase):
 
         print("Pass taking a break")
     
+    # postcondition: PASS - unable to get kendo ui element agent chat for agent_2
+    #                FAIL - able to get kendo ui element agent chat for agent_2
     def test_multiple_login(self):
         self.reset();
         print("\ntest_multiple_login");
