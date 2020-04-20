@@ -82,7 +82,7 @@ class PythonOrgSearch(unittest.TestCase):
         time.sleep(1)
         elem_login = self.driver_agent.find_element_by_xpath("//input[@class='k-button k-primary']")
         self.actions_agent.click(elem_login).perform()
-        wait = WebDriverWait(self.driver_agent, 15)
+        wait = WebDriverWait(self.driver_agent, 20)
         wait.until(EC.url_to_be("http://127.0.0.1:3000/home"))
 
     # precondition: loaded agent login page

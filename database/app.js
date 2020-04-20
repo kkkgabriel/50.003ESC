@@ -45,12 +45,13 @@ app.use('/', toggleAgentAvailability);
 *******************************************************************/
 
 const techRequest = require('./functions/techRequest');
+const getGuest = require('./functions/getGuest')
 const getAnonymous = require('./functions/getAnonymous');
 const requestAgent = require('./functions/requestAgent');
 app.use('/', techRequest);
 app.use('/', requestAgent);
 app.use('/', getAnonymous);
-
+app.use('/', getGuest)
 app.get('/status', (req, res) => res.send('noice!'));
 
 // Reset method just for our convenience

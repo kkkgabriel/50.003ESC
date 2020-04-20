@@ -66,7 +66,7 @@ class Home extends React.Component {
 
     /******************************* Lifecycle methods **********************************/
     componentDidMount(){
-        this.login();
+        // this.login();
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -84,9 +84,7 @@ class Home extends React.Component {
 		
         if (!event.value) {
             // console.log("this is event value: "+value)
-            if (!this.state.rainbowOnline){
-                this.checkForTag(value);
-            }
+            this.checkForTag(value);
             this.setState((prevState) => {
                 return { messages: [ ...prevState.messages, { author: this.user, text: value, timestamp: new Date() } ] };
             });
@@ -148,7 +146,11 @@ class Home extends React.Component {
                         }
                     ];
                     if(messagecheck[0]=="Hi"){
-                        this.user.name = messagecheck[1].slice(0,messagecheck[1].length-1);
+                        var name = messagecheck[1].slice(0,messagecheck[1].length-1);
+                        if (this.state.rainbowOnline == false){
+                            this.user.name = messagecheck[1].slice(0,messagecheck[1].length-1);
+                            this.loginGuest(name)
+                        }
                     }
                 }
                 if(messagecheck[messagecheck.length-1]==="right?"){
@@ -169,7 +171,7 @@ class Home extends React.Component {
                     this.setState({
                         userWaiting: true
                     })
-
+                    
                     // get agent
                     this.getAgent();
 
@@ -426,7 +428,34 @@ class Home extends React.Component {
         }
     }
    
-    
+    loginGuest = (name) => {
+        // Create a temporary guest name
+        let uri = api.URI + api.GET_GUEST + "?" + api.NAME + "=" + name
+        console.log(uri)
+        fetch(uri)
+            .then(res => {
+                console.log(res)
+                res.json().then(data => {
+                    if (data.status.success){
+                        let rainbowLogin = data.loginEmail;
+                        let rainbowPassword = data.password;
+
+                        window.rainbowSDK.connection.signin(rainbowLogin, rainbowPassword)
+                            .then(account => {
+                                console.log("Successful Login");
+                                console.log(account);
+                                this.setState({
+                                    rainbowOnline: true
+                                })
+                            })
+                            .catch(err => {
+                                console.log("failed to login")
+                                console.log(err);
+                            })
+                    }
+                })
+            })
+    }
     // Ends the call with rainbow Agent
     endCall = ()=>{
 

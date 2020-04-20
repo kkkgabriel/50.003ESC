@@ -62,7 +62,7 @@ class Home extends Component {
     }
 
     componentWillUnmount = () =>{
-        window.rainbowSDK.signout()
+        window.rainbowSDK.connection.signout()
     }
     conversationsChangedHandler = (event)=>{
         console.log("conversationsChangedHandler triggered");
@@ -209,7 +209,7 @@ class Home extends Component {
 		if ( lastMessage.side == "L" ){	// for rainbow, incoming messages are displayed on the left
 
 			let theirResponse = {
-				author: this.state.conversation.contact.loginEmail,
+				author: this.bot,
 				text: this.state.conversation.lastMessageText,
 				timestamp: new Date()
 			}
@@ -244,9 +244,12 @@ class Home extends Component {
             
             // set agent status to unavailable
             this.setAgentNotAvailable();
-
             // change the bot name to the name of the other party in the convo
-            this.changeBot(conversation.name.value);
+
+            var fullName = conversation.name.value
+            var firstName = fullName.trim().split(" ")[0]
+            console.log(firstName)
+            this.changeBot(firstName);
 
             // display messages from rainbow conversation onto the kendo chat element
             this.initializeMessages();
