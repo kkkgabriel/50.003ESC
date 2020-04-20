@@ -10,6 +10,9 @@ async function wait(ms) {
     });
 }
 
+//  precondition: agent is loggedin 1 (isLoggedIn) and available
+//  postcondition: PASS - agent is not available.
+//                 FAIL - no state change
 router.get(
 	'/techrequest',
 	function(req, res, next) {

@@ -4,6 +4,9 @@ const connection = require('../database');
 
 var loginAgentList=[];
 
+// precondition: email and password for agent login 
+// postcondition: PASS - update agent's loggedin in db to become 1 (isLoggedIn)
+//                FAIL - no state change
 router
 .get(
 	'/agentlogin',

@@ -2,6 +2,9 @@ const express = require('express');
 var router = express.Router();
 const connection = require('../database');
 
+// precondition: agent must be valid and loggedin is 1 (isLoggedIn)
+// postcondition: PASS - update agent's status in db to be "available"
+//                FAIL - no state change
 router.get(
 	'/endagentcall', 
 	function(req, res, next) {

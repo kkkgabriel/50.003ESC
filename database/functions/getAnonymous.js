@@ -8,6 +8,9 @@ rainbowSDK.start()
     console.log("rainbowSDK successfully started")
 })
 
+// precondition: number of rainbow guest accounts in use is not maxed out
+// postcondition: PASS - logged in to a guest rainbow account
+//                FAIL - no state change
 router.get(
 	'/getAnonymous',
 	(req, res, next)=>{

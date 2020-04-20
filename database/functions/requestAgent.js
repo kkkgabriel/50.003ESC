@@ -125,7 +125,9 @@ Lifestyleq.error(function(err,task){
     error_log("Lifestyleq",task.name)
 });
 
-//get request to add user to relevant queue.
+// precondition: user has to select tag for agent
+//               additional params - add notemail if user requests to changeagent
+// post condition: user is added to queue for tag
 router.get('/requestAgent',(req,res)=>{
     console.log('requestAgent for '+req.query.name);
     tag = req.query.tag;
@@ -151,6 +153,8 @@ router.get('/requestAgent',(req,res)=>{
 })
 
 //removes all tasks from all queues, except those processing (only way to stop them is to timeout)
+// precondition: user is in tagqueue
+// postcondition: user is removed from tagqueue
 router.get('/removeTasks',(req,res)=>{
     AccountsNBillsq.remove((worker) =>{
         return true;
@@ -185,6 +189,7 @@ router.get('/removeTasks',(req,res)=>{
 })
 
 // gets the queue position and estimated time.
+//  precondition: user in queue
 router.get('/getQueue',(req,res)=>{
     var tag = req.query.tag
     var tagq = eval(tag+"q")
