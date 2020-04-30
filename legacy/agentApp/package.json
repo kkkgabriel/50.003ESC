@@ -15,7 +15,7 @@
     "@progress/kendo-react-intl": "^3.4.0",
     "angular": "^1.5.7",
     "axios": "^0.19.2",
-    "jquery": "^3.2.1",
+    "jquery": "^3.5.0",
     "moment": "^2.19.1",
     "pako": "^1.0.11",
     "rainbow-web-sdk": "^1.40.0",
